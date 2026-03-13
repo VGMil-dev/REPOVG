@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -6,7 +7,7 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return <div className="text-white">Cargando...</div>; // O redirigir, pero el middleware ya debería hacerlo
+    return <div className="text-white">Cargando...</div>;
   }
 
   const { data: profile } = await supabase
@@ -15,12 +16,12 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .single();
 
+  if (profile?.rol === "profesor") {
+    redirect("/admin");
+  }
+
   const accesos = profile?.accesos ?? [];
   const materiasActivas = accesos.filter((a: { tipo: string }) => a.tipo === "activo");
-
-  if (profile?.rol === "profesor") {
-    return <ProfesorDashboard />;
-  }
 
   return (
     <div className="max-w-4xl">
@@ -67,31 +68,6 @@ export default async function DashboardPage() {
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function ProfesorDashboard() {
-  return (
-    <div className="max-w-4xl">
-      <h1 className="text-2xl font-bold text-white mb-2">Panel del profesor 🎓</h1>
-      <p className="text-gray-400 mb-8">Gestiona usuarios, accesos y contenido.</p>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { href: "/admin/usuarios", icon: "👥", label: "Usuarios", desc: "Ver y crear cuentas" },
-          { href: "/admin/accesos", icon: "🔑", label: "Accesos", desc: "Asignar materias" },
-          { href: "/admin/contenido", icon: "📝", label: "Contenido", desc: "Subir temas MDX" },
-        ].map((item) => (
-          <Link key={item.href} href={item.href} className="card hover:border-brand-500 transition-colors group">
-            <div className="text-3xl mb-3">{item.icon}</div>
-            <h2 className="font-semibold text-white group-hover:text-brand-400 transition-colors">
-              {item.label}
-            </h2>
-            <p className="text-sm text-gray-400 mt-1">{item.desc}</p>
-          </Link>
-        ))}
-      </div>
     </div>
   );
 }

@@ -3,17 +3,11 @@
 import React from "react";
 import { Input } from "../ui/Input";
 
-interface FormFieldProps {
+interface FormFieldProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLSelectElement> {
   label: string;
   name: string;
-  type?: string;
-  placeholder?: string;
   icon?: React.ReactNode;
-  required?: boolean;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   as?: "input" | "select";
-  children?: React.ReactNode;
   error?: string | null;
 }
 

@@ -16,6 +16,22 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
+  // Get user role to determine redirect
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("rol")
+      .eq("id", user.id)
+      .single();
+
+    revalidatePath("/", "layout");
+    
+    if (profile?.rol === "profesor") {
+      redirect("/admin");
+    }
+  }
+
   revalidatePath("/", "layout");
   redirect("/dashboard");
 }

@@ -79,19 +79,6 @@ export const RegisterForm = () => {
         minLength={8}
       />
 
-      <FormField
-        label="Rol de Acceso"
-        name="rol"
-        as="select"
-        value={rol}
-        onChange={(e) => setRol(e.target.value)}
-        icon={<ShieldCheck className="w-4 h-4" />}
-      >
-        <option value="estudiante" className="bg-[#050505] text-brand-300">ESTUDIANTE</option>
-        <option value="profesor" className="bg-[#050505] text-brand-300">PROFESOR (ADMIN)</option>
-        <option value="externo" className="bg-[#050505] text-brand-300">EXTERNO</option>
-        <option value="exalumno" className="bg-[#050505] text-brand-300">EXALUMNO</option>
-      </FormField>
 
       {error && (
         <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 font-terminal text-xs uppercase text-center animate-pulse">
