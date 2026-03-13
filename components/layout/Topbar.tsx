@@ -8,7 +8,7 @@ interface Props {
 
 export default function Topbar({ profile }: Props) {
   return (
-    <header className="h-14 bg-gray-900 border-b border-gray-800 flex items-center justify-between px-6">
+    <header className="h-14 bg-[#050505] border-b border-brand-500/20 flex items-center justify-between px-6">
       {/* XP + Coins (solo para no-profesor) */}
       {profile.rol !== "profesor" && (
         <div className="flex items-center gap-4 text-sm">

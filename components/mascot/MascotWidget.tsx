@@ -4,15 +4,17 @@ import React, { useEffect, useState } from "react";
 import { useMascot } from "@/lib/context/MascotContext";
 import { usePathname } from "next/navigation";
 
+import { MascotSprite, AnimationType } from "./MascotSprite";
+
 export function MascotWidget() {
   const { name, state, messages } = useMascot();
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    // No mostrar en login, register ni landing
-    const isAuthPage = pathname === "/login" || pathname === "/register" || pathname === "/";
-    if (isAuthPage) {
+    // No mostrar en login, register, landing ni admin
+    const isExcludedPage = pathname === "/login" || pathname === "/register" || pathname === "/" || pathname.startsWith("/admin");
+    if (isExcludedPage) {
       setIsVisible(false);
       return;
     }
@@ -22,6 +24,9 @@ export function MascotWidget() {
   }, [pathname]);
 
   if (!isVisible) return null;
+
+  // Mapear el estado del contexto a la animación del componente
+  const currentAnimation: AnimationType = state === "idle" ? "idle" : "welcome";
 
   return (
     <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end gap-4 pointer-events-none">
@@ -49,10 +54,13 @@ export function MascotWidget() {
           {name}
         </div>
         
-        {/* Sprite animado (clases definidas en globals.css) */}
-        <div className={`mascot-sprite scale-50 md:scale-75 origin-bottom-right drop-shadow-[0_0_15px_rgba(34,197,94,0.4)] hover:scale-100 transition-transform duration-300 ${
-          state !== "idle" ? "animate-float" : ""
-        }`} />
+        {/* Nuevo Componente Dinámico */}
+        <MascotSprite 
+          animation={currentAnimation}
+          className={`scale-50 md:scale-75 origin-bottom-right drop-shadow-[0_0_15px_rgba(34,197,94,0.4)] hover:scale-100 transition-all duration-300 ${
+            state !== "idle" ? "animate-float" : ""
+          }`}
+        />
       </div>
     </div>
   );

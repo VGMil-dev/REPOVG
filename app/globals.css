@@ -20,7 +20,7 @@
   /* Scrollbar personalizado */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: #000; }
-  ::-webkit-scrollbar-thumb { background: #1a2a7a; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 3px; opacity: 0.5; }
 }
 
 @layer components {
@@ -29,16 +29,16 @@
     text-transform: uppercase;
   }
   .btn-secondary {
-    @apply bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-100 font-mono px-4 py-3 rounded-sm transition-colors;
+    @apply bg-black border border-brand-500/20 hover:border-brand-500/50 text-white font-terminal px-4 py-3 rounded-sm transition-all uppercase tracking-widest text-[10px];
   }
   .card {
     @apply bg-[#0c0c0c]/90 border border-brand-500/30 rounded-lg p-8 backdrop-blur-md shadow-[0_0_30px_rgba(34,197,94,0.1)];
   }
   .input {
-    @apply bg-black/40 border border-brand-500/20 rounded-sm px-4 py-3 text-gray-100 placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 w-full transition-all font-mono;
+    @apply bg-black border border-brand-500/20 rounded-sm px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 w-full transition-all font-terminal text-sm;
   }
   .badge {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter;
   }
 
   /* Retro / Pixel styles */
@@ -62,11 +62,19 @@
   .scanlines {
     background: linear-gradient(
       rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.08) 50%
+      rgba(0, 0, 0, 0.05) 50%
     );
     background-size: 100% 4px;
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 0.4;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   .animate-float {
@@ -75,15 +83,6 @@
 
   .animate-blink {
     animation: blink 1s step-end infinite;
-  }
-
-  .mascot-sprite {
-    width: 256px;
-    height: 256px;
-    background-image: url('/global/spritesheet_welcome.webp');
-    background-size: 5120px 256px; /* 20 frames * 256px */
-    animation: mascot-play 3.2s infinite;
-    image-rendering: pixelated;
   }
 }
 
@@ -99,25 +98,4 @@
 @keyframes blink {
   from, to { opacity: 1; }
   50% { opacity: 0; }
-}
-
-@keyframes mascot-play {
-  /* Espera 1s (0% a 31.25%) */
-  0% { 
-    background-position: 0 0; 
-    animation-timing-function: step-end; 
-  }
-  31.25% { 
-    background-position: 0 0; 
-    animation-timing-function: steps(20); 
-  }
-  /* Animación 1.2s (31.25% a 68.75%) */
-  68.75% { 
-    background-position: -5120px 0; 
-    animation-timing-function: step-end; 
-  }
-  /* Espera 1s (68.75% a 100%) */
-  100% { 
-    background-position: -5120px 0; 
-  }
 }

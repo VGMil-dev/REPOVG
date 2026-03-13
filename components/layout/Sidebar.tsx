@@ -2,7 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut } from "lucide-react";
+import {
+  LogOut,
+  Home,
+  Users,
+  Key,
+  BookOpen,
+  BarChart3,
+  Shield,
+  Settings,
+  Terminal
+} from "lucide-react";
+import { MascotSprite } from "@/components/mascot/MascotSprite";
 import { logout } from "@/lib/auth/actions";
 import type { Profile } from "@/types";
 
@@ -11,15 +22,18 @@ interface Props {
 }
 
 const navEstudiante = [
-  { href: "/dashboard", label: "Inicio", icon: "🏠" },
-  { href: "/perfil", label: "Mi perfil", icon: "🐾" },
+  { href: "/dashboard", label: "Inicio", icon: Home },
+  { href: "/perfil", label: "Mi perfil", icon: Users },
 ];
 
 const navProfesor = [
-  { href: "/dashboard", label: "Inicio", icon: "🏠" },
-  { href: "/admin", label: "Panel Admin", icon: "⚙️" },
-  { href: "/admin/usuarios", label: "Usuarios", icon: "👥" },
-  { href: "/admin/accesos", label: "Accesos", icon: "🔑" },
+  { href: "/admin", label: "Panel General", icon: Home },
+  { href: "/admin/usuarios", label: "Gestión de Cuentas", icon: Users },
+  { href: "/admin/accesos", label: "Control de Accesos", icon: Key },
+  { href: "/admin/contenido", label: "Gestor de Contenido", icon: BookOpen },
+  { href: "/admin/analytics", label: "Métricas y Progreso", icon: BarChart3 },
+  { href: "/admin/seguridad", label: "Logs de Seguridad", icon: Terminal },
+  { href: "/admin/configuracion", label: "Ajustes Generales", icon: Settings },
 ];
 
 export default function Sidebar({ profile }: Props) {
@@ -27,52 +41,72 @@ export default function Sidebar({ profile }: Props) {
   const nav = profile.rol === "profesor" ? navProfesor : navEstudiante;
 
   return (
-    <aside className="w-56 bg-gray-900 border-r border-gray-800 flex flex-col">
-      {/* Logo */}
-      <div className="px-4 py-5 border-b border-gray-800">
-        <span className="text-xl font-bold text-white">📚 RepoVG</span>
+    <aside className="w-64 bg-[#0a0c10] border-r border-white/5 flex flex-col h-full overflow-hidden">
+      {/* Header Section from Reference */}
+      <div className="px-6 pt-6 pb-2 flex flex-col items-center border-b border-white/5 relative bg-gradient-to-b from-white/5 to-transparent">
+        {/* Mascot placeholder - Replicating the image feel */}
+        <div className="relative -mb-32 z-0">
+          {/* Hard hat mascot representation - Animated */}
+          <MascotSprite
+            animation="idle"
+            className="scale-[0.45] origin-top brightness-125 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+          />
+        </div>
+
+        <div className="text-center relative z-10">
+          <div className="flex items-center justify-center gap-1 mb-0.5">
+            <span className="text-xl font-pixel text-orange-500 tracking-tighter">Repo</span>
+            <span className="text-xl font-pixel text-brand-500 tracking-tighter">VG</span>
+          </div>
+          <div className="text-[9px] font-terminal text-gray-500 mb-1 uppercase tracking-[0.2em]">
+            Admin v1.0
+          </div>
+        </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-2 py-4 space-y-1">
+      {/* Nav Section from Reference */}
+      <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto scrollbar-hide">
         {nav.map((item) => {
-          const active = pathname === item.href || pathname.startsWith(item.href + "/");
+          const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href + "/"));
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                active
-                  ? "bg-brand-600 text-white"
-                  : "text-gray-400 hover:text-white hover:bg-gray-800"
-              }`}
+              className={`flex items-center gap-4 px-3 py-2.5 rounded transition-all duration-300 group relative ${active
+                ? "border border-brand-500/50 bg-brand-500/5 shadow-[0_0_15px_rgba(34,197,94,0.1)]"
+                : "hover:bg-white/5"
+                }`}
             >
-              <span>{item.icon}</span>
-              {item.label}
+              <item.icon className={`w-5 h-5 transition-colors ${active ? "text-brand-500" : "text-gray-500 group-hover:text-gray-300"}`} />
+
+              <div className="flex items-center gap-2">
+                <span className={`text-gray-600 font-terminal text-[11px] group-hover:text-brand-500 transition-colors ${active ? "text-brand-500" : ""}`}>
+                  {'>'}
+                </span>
+                <span className={`font-terminal text-[11px] uppercase tracking-wider transition-colors ${active ? "text-brand-400" : "text-gray-400 group-hover:text-white"
+                  }`}>
+                  {item.label}
+                </span>
+              </div>
+
+              {active && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-1/2 bg-brand-500" />
+              )}
             </Link>
           );
         })}
       </nav>
 
-      {/* Rol badge + Logout */}
-      <div className="px-4 py-3 border-t border-gray-800 space-y-3">
-        <span className={`badge text-xs ${
-          profile.rol === "profesor"
-            ? "bg-purple-500/20 text-purple-400"
-            : profile.rol === "estudiante"
-            ? "bg-brand-500/20 text-brand-400"
-            : "bg-gray-500/20 text-gray-400"
-        }`}>
-          {profile.rol}
-        </span>
-
+      {/* Footer from Reference */}
+      <div className="p-6 border-t border-white/5 flex justify-center">
         <form action={logout}>
           <button
             type="submit"
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-red-500/10 transition-colors group"
+            className="flex items-center justify-center gap-2 px-6 py-2 border border-red-500/30 rounded-lg font-terminal text-[11px] text-red-500/70 hover:text-red-400 hover:border-red-500/60 hover:bg-red-500/5 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all duration-300 uppercase tracking-widest group"
           >
-            <LogOut className="w-4 h-4 text-gray-500 group-hover:text-red-400" />
-            <span>Cerrar sesión</span>
+            <span>[</span>
+            <span>Cerrar Sesión</span>
+            <span>]</span>
           </button>
         </form>
       </div>
