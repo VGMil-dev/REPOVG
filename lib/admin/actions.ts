@@ -36,18 +36,6 @@ export async function crearUsuario(formData: FormData) {
 
   if (authError) return { error: authError.message };
 
-  // Crear perfil
-  const { error: profileError } = await supabase.from("profiles").insert({
-    id: authData.user.id,
-    email,
-    nombre,
-    rol,
-    xp_total: 0,
-    coins: 0,
-  });
-
-  if (profileError) return { error: profileError.message };
-
   revalidatePath("/admin/usuarios");
   return { success: true };
 }

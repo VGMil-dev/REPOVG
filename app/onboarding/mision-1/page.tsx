@@ -132,7 +132,7 @@ export default function Mission1Page() {
         {/* Footer info */}
         <div className="mt-8 flex justify-center gap-8 opacity-40">
            <div className="flex items-center gap-2 font-terminal text-[10px] text-gray-500 uppercase tracking-widest">
-              <Zap className="w-3 h-3" /> Flash v1.5 Enabled
+              <Zap className="w-3 h-3" /> Gemini AI Enabled
            </div>
            <div className="flex items-center gap-2 font-terminal text-[10px] text-gray-500 uppercase tracking-widest">
               <ShieldCheck className="w-3 h-3" /> Secure Storage

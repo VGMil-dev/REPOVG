@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
+import ProfileSyncState from "@/components/layout/ProfileSyncState";
 
 export default async function ProtectedLayout({
   children,
@@ -19,7 +20,9 @@ export default async function ProtectedLayout({
     .eq("id", user.id)
     .single();
 
-  if (!profile) redirect("/login");
+  if (!profile) {
+    return <ProfileSyncState />;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-950">

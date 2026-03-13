@@ -4,9 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function validateGeminiKey(apiKey: string) {
   try {
-    // 1. Validar contra el endpoint de Gemini (Model info es un buen health-check)
+    // 1. Validar contra el endpoint de Gemini (Listar modelos es un health-check genérico)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash?key=${apiKey}`
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
     );
 
     if (!response.ok) {
@@ -24,7 +24,7 @@ export async function validateGeminiKey(apiKey: string) {
       .from("profiles")
       .update({ 
         gemini_api_key_enc: apiKey, // TODO: Encriptar en el futuro si es necesario
-        onboarding_step: 1 // Avanzamos al siguiente paso
+        onboarding_step: 1 // Avanzamos al siguiente paso (Misión 2)
       })
       .eq("id", user.id);
 

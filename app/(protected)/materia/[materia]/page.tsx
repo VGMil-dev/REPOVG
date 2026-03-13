@@ -18,6 +18,7 @@ export default async function MateriaPage({ params }: Props) {
   const { materia: materiaSlug } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
 
   // Verificar acceso
   const { data: materia } = await supabase
@@ -28,12 +29,12 @@ export default async function MateriaPage({ params }: Props) {
   const { data: acceso } = await supabase
     .from("accesos")
     .select("tipo")
-    .eq("user_id", user!.id)
+    .eq("user_id", user.id)
     .eq("materia_id", materia.id)
     .single();
 
   const { data: profile } = await supabase
-    .from("profiles").select("rol").eq("id", user!.id).single();
+    .from("profiles").select("rol").eq("id", user.id).single();
 
   if (!acceso && profile?.rol !== "profesor") redirect("/dashboard");
 
@@ -43,7 +44,7 @@ export default async function MateriaPage({ params }: Props) {
   const { data: progreso } = await supabase
     .from("topic_progress")
     .select("*")
-    .eq("user_id", user!.id)
+    .eq("user_id", user.id)
     .eq("materia_id", materia.id);
 
   const progresoMap = new Map(progreso?.map((p) => [p.tema_slug, p.estado]) ?? []);

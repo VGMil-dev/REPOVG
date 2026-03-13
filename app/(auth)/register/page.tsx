@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nombre, setNombre] = useState("");
+  const [rol, setRol] = useState("estudiante");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function RegisterPage() {
         options: {
           data: {
             nombre,
-            rol: "externo",
+            rol,
           },
         },
       });
@@ -119,6 +120,23 @@ export default function RegisterPage() {
                   required
                   minLength={8}
                 />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="font-pixel text-[10px] text-brand-500/70 uppercase">Rol de Acceso</label>
+              <div className="relative text-brand-200">
+                <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-500/40" />
+                <select
+                  value={rol}
+                  onChange={(e) => setRol(e.target.value)}
+                  className="w-full bg-black/40 border-2 border-brand-500/20 rounded-lg py-4 pl-10 pr-4 font-mono text-sm focus:border-brand-500/60 focus:outline-none transition-all shadow-[inset_0_0_10px_rgba(34,197,94,0.05)] appearance-none"
+                >
+                  <option value="estudiante" className="bg-[#050505] text-brand-300">ESTUDIANTE</option>
+                  <option value="profesor" className="bg-[#050505] text-brand-300">PROFESOR (ADMIN)</option>
+                  <option value="externo" className="bg-[#050505] text-brand-300">EXTERNO</option>
+                  <option value="exalumno" className="bg-[#050505] text-brand-300">EXALUMNO</option>
+                </select>
               </div>
             </div>
 

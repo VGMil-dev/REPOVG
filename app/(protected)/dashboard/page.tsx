@@ -5,10 +5,14 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  if (!user) {
+    return <div className="text-white">Cargando...</div>; // O redirigir, pero el middleware ya debería hacerlo
+  }
+
   const { data: profile } = await supabase
     .from("profiles")
-    .select("*, accesos(*, materia:materias(*))")
-    .eq("id", user!.id)
+    .select("*, accesos!user_id(*, materia:materias(*))")
+    .eq("id", user.id)
     .single();
 
   const accesos = profile?.accesos ?? [];

@@ -5,15 +5,16 @@ import AsignarAccesoForm from "./AsignarAccesoForm";
 export default async function AccesosPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
 
   const { data: profile } = await supabase
-    .from("profiles").select("rol").eq("id", user!.id).single();
+    .from("profiles").select("rol").eq("id", user.id).single();
 
   if (profile?.rol !== "profesor") redirect("/dashboard");
 
   const [{ data: accesos }, { data: usuarios }, { data: materias }, { data: semestres }] =
     await Promise.all([
-      supabase.from("accesos").select("*, profile:profiles(nombre, email), materia:materias(titulo)").order("created_at", { ascending: false }),
+      supabase.from("accesos").select("*, profile:profiles!user_id(nombre, email), materia:materias(titulo)").order("created_at", { ascending: false }),
       supabase.from("profiles").select("id, nombre, email").neq("rol", "profesor"),
       supabase.from("materias").select("id, titulo"),
       supabase.from("semestres").select("id, nombre").eq("activo", true),

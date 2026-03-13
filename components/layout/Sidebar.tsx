@@ -15,9 +15,9 @@ const navEstudiante = [
 
 const navProfesor = [
   { href: "/dashboard", label: "Inicio", icon: "🏠" },
+  { href: "/admin", label: "Panel Admin", icon: "⚙️" },
   { href: "/admin/usuarios", label: "Usuarios", icon: "👥" },
   { href: "/admin/accesos", label: "Accesos", icon: "🔑" },
-  { href: "/admin/contenido", label: "Contenido", icon: "📝" },
 ];
 
 export default function Sidebar({ profile }: Props) {
