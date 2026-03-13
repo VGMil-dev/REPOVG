@@ -69,6 +69,36 @@ export async function asignarAcceso(formData: FormData) {
   return { success: true };
 }
 
+// Revoca acceso a materia
+export async function revocarAcceso(accesoId: string) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("accesos").delete().eq("id", accesoId);
+  if (error) return { error: error.message };
+  revalidatePath("/admin/accesos");
+  return { success: true };
+}
+
+// Cambia el tipo de acceso (activo/historico)
+export async function cambiarTipoAcceso(accesoId: string, tipo: AccesoTipo) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("accesos")
+    .update({ tipo })
+    .eq("id", accesoId);
+  if (error) return { error: error.message };
+  revalidatePath("/admin/accesos");
+  return { success: true };
+}
+
+// Elimina usuario (solo profesor)
+export async function eliminarUsuario(userId: string) {
+  const adminClient = await createAdminClient();
+  const { error } = await adminClient.auth.admin.deleteUser(userId);
+  if (error) return { error: error.message };
+  revalidatePath("/admin/usuarios");
+  return { success: true };
+}
+
 // Helper: cliente con service role para admin operations
 async function createAdminClient() {
   const { createClient: createSupabase } = await import("@supabase/supabase-js");

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { crearUsuario } from '@/lib/auth/actions'
+import { crearUsuario } from '@/lib/admin/actions'
 import { Plus, X, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
 
 export default function CreateUserForm() {

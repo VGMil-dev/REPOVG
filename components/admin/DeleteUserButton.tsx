@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { eliminarUsuario } from '@/lib/auth/actions'
+import { eliminarUsuario } from '@/lib/admin/actions'
 import { Trash2, Loader2 } from 'lucide-react'
 
 export default function DeleteUserButton({ userId }: { userId: string }) {

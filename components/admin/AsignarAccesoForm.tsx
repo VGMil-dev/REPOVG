@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { asignarAcceso } from '@/lib/auth/actions'
+import { asignarAcceso } from '@/lib/admin/actions'
 import { Plus, X, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface Props {

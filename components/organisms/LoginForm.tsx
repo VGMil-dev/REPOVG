@@ -5,6 +5,7 @@ import { Mail, Lock, Eye, EyeOff, Github } from "lucide-react";
 import { FormField } from "../shared/FormField";
 import { Button } from "../ui/Button";
 import { login } from "@/lib/auth/actions";
+import { Typography } from "../ui/Typography";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -55,9 +56,9 @@ export const LoginForm = () => {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 font-terminal text-xs uppercase text-center animate-pulse">
+        <Typography variant="terminal-sm" className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg !text-red-500 uppercase text-center animate-pulse">
           ERROR::{error}
-        </div>
+        </Typography>
       )}
 
       <Button type="submit" loading={loading} className="w-full py-5 text-lg hover:scale-[1.02]">
@@ -66,7 +67,7 @@ export const LoginForm = () => {
 
       <div className="flex items-center gap-3 text-xs text-brand-600">
         <div className="h-px flex-1 bg-brand-500/50" />
-        <span className="font-terminal text-[10px] uppercase">Integración_Externa</span>
+        <Typography variant="terminal-sm" as="span" className="!text-[10px] uppercase">Integración_Externa</Typography>
         <div className="h-px flex-1 bg-brand-500/50" />
       </div>
 
@@ -75,7 +76,7 @@ export const LoginForm = () => {
         className="flex w-full items-center justify-center gap-3 rounded-lg border-2 border-brand-500/10 bg-black/40 py-4 font-terminal text-sm text-brand-300 hover:bg-brand-500/5 hover:border-brand-500/30 transition-all"
       >
         <Github className="h-5 w-5" />
-        Continuar con GitHub
+        <Typography variant="body-sm" as="span">Continuar con GitHub</Typography>
       </button>
     </form>
   );

@@ -1,13 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { Typography } from "@/components/ui/Typography";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return <div className="text-white">Cargando...</div>;
+    return <Typography className="text-white">Cargando...</Typography>;
   }
 
   const { data: profile } = await supabase
@@ -25,17 +26,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="text-2xl font-bold text-white mb-2">
+      <Typography as="h1" variant="brand-h2" className="mb-2 !text-white">
         ¡Hola, {profile?.nombre_mascota ?? profile?.nombre}! 👋
-      </h1>
-      <p className="text-gray-400 mb-8">Aquí están tus materias activas.</p>
+      </Typography>
+      <Typography variant="body" className="mb-8">Aquí están tus materias activas.</Typography>
 
       {materiasActivas.length === 0 ? (
         <div className="card text-center py-12">
-          <p className="text-4xl mb-3">📭</p>
-          <p className="text-gray-400">
+          <Typography variant="brand-h1" className="mb-3">📭</Typography>
+          <Typography variant="body">
             Aún no tienes materias asignadas. Pide a tu profesor que te agregue.
-          </p>
+          </Typography>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -56,12 +57,12 @@ export default async function DashboardPage() {
                   {acceso.materia?.slug === "java" ? "☕" : "📱"}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-white group-hover:text-brand-400 transition-colors">
+                  <Typography variant="body" as="h2" className="font-semibold !text-white group-hover:!text-brand-400 transition-colors">
                     {acceso.materia?.titulo}
-                  </h2>
-                  <p className="text-sm text-gray-400 mt-1">
+                  </Typography>
+                  <Typography variant="body-sm" className="mt-1">
                     {acceso.materia?.descripcion}
-                  </p>
+                  </Typography>
                 </div>
               </div>
             </Link>

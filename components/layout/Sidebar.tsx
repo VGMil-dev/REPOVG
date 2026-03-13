@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { MascotSprite } from "@/components/mascot/MascotSprite";
 import { logout } from "@/lib/auth/actions";
+import { Typography } from "../ui/Typography";
 import type { Profile } from "@/types";
 
 interface Props {
@@ -55,12 +56,12 @@ export default function Sidebar({ profile }: Props) {
 
         <div className="text-center relative z-10">
           <div className="flex items-center justify-center gap-1 mb-0.5">
-            <span className="text-xl font-pixel text-orange-500 tracking-tighter">Repo</span>
-            <span className="text-xl font-pixel text-brand-500 tracking-tighter">VG</span>
+            <Typography variant="brand-h2" as="span" className="!text-xl !text-orange-500">Repo</Typography>
+            <Typography variant="brand-h2" as="span" className="!text-xl !text-brand-500">VG</Typography>
           </div>
-          <div className="text-[9px] font-terminal text-gray-500 mb-1 uppercase tracking-[0.2em]">
+          <Typography variant="terminal-sm" className="!text-[9px] mb-1 !text-gray-500">
             Admin v1.0
-          </div>
+          </Typography>
         </div>
       </div>
 
@@ -80,13 +81,13 @@ export default function Sidebar({ profile }: Props) {
               <item.icon className={`w-5 h-5 transition-colors ${active ? "text-brand-500" : "text-gray-500 group-hover:text-gray-300"}`} />
 
               <div className="flex items-center gap-2">
-                <span className={`text-gray-600 font-terminal text-[11px] group-hover:text-brand-500 transition-colors ${active ? "text-brand-500" : ""}`}>
+                <Typography variant="terminal-sm" as="span" className={`!text-gray-600 group-hover:!text-brand-500 transition-colors ${active ? "!text-brand-500" : ""}`}>
                   {'>'}
-                </span>
-                <span className={`font-terminal text-[11px] uppercase tracking-wider transition-colors ${active ? "text-brand-400" : "text-gray-400 group-hover:text-white"
+                </Typography>
+                <Typography variant="terminal-sm" as="span" className={`!text-[11px] transition-colors ${active ? "!text-brand-400" : "!text-gray-400 group-hover:!text-white"
                   }`}>
                   {item.label}
-                </span>
+                </Typography>
               </div>
 
               {active && (
@@ -104,9 +105,11 @@ export default function Sidebar({ profile }: Props) {
             type="submit"
             className="flex items-center justify-center gap-2 px-6 py-2 border border-red-500/30 rounded-lg font-terminal text-[11px] text-red-500/70 hover:text-red-400 hover:border-red-500/60 hover:bg-red-500/5 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all duration-300 uppercase tracking-widest group"
           >
-            <span>[</span>
-            <span>Cerrar Sesión</span>
-            <span>]</span>
+            <Typography variant="terminal-sm" as="span" className="flex items-center gap-1">
+              <span>[</span>
+              <span>Cerrar Sesión</span>
+              <span>]</span>
+            </Typography>
           </button>
         </form>
       </div>

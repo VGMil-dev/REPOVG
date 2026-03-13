@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getTopicsByMateria } from "@/lib/content/mdx";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { Typography } from "@/components/ui/Typography";
 
 interface Props {
   params: Promise<{ materia: string }>;
@@ -61,24 +62,24 @@ export default async function MateriaPage({ params }: Props) {
     <div className="max-w-3xl">
       <div className="mb-8">
         <Link href="/dashboard" className="text-gray-500 hover:text-gray-300 text-sm transition-colors">
-          ← Dashboard
+          <Typography variant="terminal-sm" as="span">← Dashboard</Typography>
         </Link>
-        <h1 className="text-2xl font-bold text-white mt-2">{materia.titulo}</h1>
-        <p className="text-gray-400 text-sm">{materia.descripcion}</p>
+        <Typography as="h1" variant="brand-h2" className="mt-2 !text-white">{materia.titulo}</Typography>
+        <Typography variant="body-sm">{materia.descripcion}</Typography>
       </div>
 
       {topics.length === 0 ? (
         <div className="card text-center py-12">
-          <p className="text-4xl mb-3">🚧</p>
-          <p className="text-gray-400">El contenido de esta materia está siendo preparado.</p>
+          <Typography variant="brand-h1" className="mb-3">🚧</Typography>
+          <Typography variant="body">El contenido de esta materia está siendo preparado.</Typography>
         </div>
       ) : (
         <div className="space-y-8">
           {Array.from(sections.entries()).map(([seccion, temas]) => (
             <div key={seccion}>
-              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              <Typography variant="terminal-sm" as="h2" className="font-semibold !text-gray-500 uppercase tracking-wider mb-3">
                 {seccion}
-              </h2>
+              </Typography>
               <div className="space-y-2">
                 {temas.map((topic) => {
                   const estado = progresoMap.get(topic.slugPath) ?? "disponible";
@@ -95,15 +96,15 @@ export default async function MateriaPage({ params }: Props) {
                           : `border-gray-800 hover:border-brand-500 ${cfg.bg} cursor-pointer`
                       }`}
                     >
-                      <span className="text-lg">{cfg.icon}</span>
+                      <Typography as="span" variant="body-lg">{cfg.icon}</Typography>
                       <div className="flex-1">
-                        <span className={`font-medium ${bloqueado ? "text-gray-600" : "text-white"}`}>
+                        <Typography as="span" variant="body" className={`font-medium ${bloqueado ? "!text-gray-600" : "!text-white"}`}>
                           {topic.frontmatter.titulo}
-                        </span>
+                        </Typography>
                       </div>
-                      <span className="text-xs text-gray-600">
+                      <Typography as="span" variant="terminal-sm" className="!text-gray-600">
                         {"⭐".repeat(topic.frontmatter.dificultad)}
-                      </span>
+                      </Typography>
                     </Link>
                   );
                 })}

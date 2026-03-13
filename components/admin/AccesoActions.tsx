@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { revocarAcceso, cambiarTipoAcceso } from '@/lib/auth/actions'
+import { revocarAcceso, cambiarTipoAcceso } from '@/lib/admin/actions'
 import { Trash2, RefreshCw, Loader2 } from 'lucide-react'
 
 export default function AccesoActions({ accesoId, tipoActual }: {

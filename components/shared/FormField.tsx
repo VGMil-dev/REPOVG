@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Input } from "../ui/Input";
+import { Typography } from "../ui/Typography";
 
 interface FormFieldProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLSelectElement> {
   label: string;
@@ -18,14 +19,14 @@ export const FormField = ({
 }: FormFieldProps) => {
   return (
     <div className="space-y-2">
-      <label className="font-pixel text-[10px] text-brand-500/70 uppercase block tracking-wider">
+      <Typography variant="pixel-label" as="label" className="text-brand-500/70 uppercase block tracking-wider">
         {label}
-      </label>
+      </Typography>
       <Input {...inputProps} />
       {error && (
-        <p className="font-terminal text-[10px] text-red-500 uppercase tracking-tighter animate-pulse">
+        <Typography variant="terminal-sm" className="!text-red-500 uppercase tracking-tighter animate-pulse">
           ERROR::{error}
-        </p>
+        </Typography>
       )}
     </div>
   );

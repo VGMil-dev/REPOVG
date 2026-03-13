@@ -102,3 +102,33 @@ export interface XPLog {
   ref_id: string | null;
   created_at: string;
 }
+
+// Content Types
+export interface TemaNode {
+  slug: string;
+  titulo: string;
+  orden: number;
+}
+
+export interface SeccionNode {
+  titulo: string;
+  temas: TemaNode[];
+}
+
+export interface MateriaContent {
+  slug: string;
+  titulo: string;
+  secciones: SeccionNode[];
+}
+
+export interface TemaData {
+  content: string;
+  meta: {
+    titulo: string;
+    descripcion: string | null;
+    materia: string;
+    seccion: string | null;
+  };
+  prev: TemaNode | null;
+  next: TemaNode | null;
+}

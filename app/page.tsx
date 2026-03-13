@@ -114,9 +114,9 @@ export default function LandingPage() {
                   className="absolute z-10 top-39 w-full h-fit object-cover pixelated pointer-events-none"
                 />
 
-                <p className="font-pixel text-[8px] lg:text-[10px] text-black leading-tight text-center relative z-10 px-4 lg:px-6 pb-2 mb-2">
+                <Typography variant="pixel-label" className="text-black leading-tight text-center relative z-10 px-4 lg:px-6 pb-2 mb-2">
                   <MascotLandingMessage />
-                </p>
+                </Typography>
               </div>
             </div>
 
