@@ -1,3 +1,4 @@
+import { LogOut } from "lucide-react";
 import { logout } from "@/lib/auth/actions";
 import type { Profile } from "@/types";
 
@@ -25,9 +26,10 @@ export default function Topbar({ profile }: Props) {
         <form action={logout}>
           <button
             type="submit"
-            className="text-xs text-gray-500 hover:text-red-400 transition-colors"
+            title="Cerrar sesión"
+            className="p-2 hover:bg-gray-800 rounded-lg text-gray-500 hover:text-red-400 transition-colors"
           >
-            Salir
+            <LogOut className="w-5 h-5" />
           </button>
         </form>
       </div>

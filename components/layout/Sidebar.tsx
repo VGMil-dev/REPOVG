@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogOut } from "lucide-react";
+import { logout } from "@/lib/auth/actions";
 import type { Profile } from "@/types";
 
 interface Props {
@@ -52,8 +54,8 @@ export default function Sidebar({ profile }: Props) {
         })}
       </nav>
 
-      {/* Rol badge */}
-      <div className="px-4 py-3 border-t border-gray-800">
+      {/* Rol badge + Logout */}
+      <div className="px-4 py-3 border-t border-gray-800 space-y-3">
         <span className={`badge text-xs ${
           profile.rol === "profesor"
             ? "bg-purple-500/20 text-purple-400"
@@ -63,6 +65,16 @@ export default function Sidebar({ profile }: Props) {
         }`}>
           {profile.rol}
         </span>
+
+        <form action={logout}>
+          <button
+            type="submit"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-red-500/10 transition-colors group"
+          >
+            <LogOut className="w-4 h-4 text-gray-500 group-hover:text-red-400" />
+            <span>Cerrar sesión</span>
+          </button>
+        </form>
       </div>
     </aside>
   );
