@@ -83,7 +83,13 @@ export async function updateSession(request: NextRequest) {
           if ((profile.rol === "exalumno" || profile.rol === "externo") && profile.onboarding_step === 0 && pathname !== "/checkout") {
              return NextResponse.redirect(new URL("/checkout", request.url));
           }
-          return NextResponse.redirect(new URL("/onboarding/mision-1", request.url));
+          const misionMap: Record<number, string> = {
+            0: "/onboarding/mision-1",
+            1: "/onboarding/mision-2",
+            2: "/onboarding/mision-3",
+          };
+          const dest = misionMap[profile.onboarding_step] ?? "/onboarding/mision-1";
+          return NextResponse.redirect(new URL(dest, request.url));
         }
         return supabaseResponse;
       }
