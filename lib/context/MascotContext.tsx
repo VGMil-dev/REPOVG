@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
-type MascotState = "idle" | "think" | "curious" | "celebrate" | "worry" | "learning";
+type MascotState = "idle" | "think" | "curious" | "celebrate" | "worry" | "learning" | "putbrain";
 
 interface MascotMessage {
   id: string;
@@ -42,7 +42,7 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
   const say = useCallback((text: string, type: MascotMessage["type"] = "info", duration = 5000) => {
     const id = Math.random().toString(36).substring(7);
     const newMessage: MascotMessage = { id, text, type, duration };
-    
+
     setMessages((prev) => [...prev, newMessage]);
 
     if (duration > 0) {

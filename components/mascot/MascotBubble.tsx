@@ -42,7 +42,7 @@ export function MascotBubble({ text, type = "info", className = "" }: MascotBubb
         }}
       >
         <p
-          className={`font-mono text-[11px] leading-snug text-center font-bold ${typeColor[type]}`}
+          className={`font-mono text-[11px] leading-snug text-center font-bold whitespace-pre-line ${typeColor[type]}`}
           style={{ imageRendering: "pixelated" }}
         >
           {text}

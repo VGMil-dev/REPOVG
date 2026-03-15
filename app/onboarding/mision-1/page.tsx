@@ -72,7 +72,7 @@ export default function Mission1Page() {
     const result = await validateGeminiKey(apiKey);
 
     if (result.success) {
-      setMascotState("celebrate");
+      setMascotState("putbrain");
       say("¡Núcleo sincronizado! Eres imparable 🎉", "success", 8000);
       setSuccess(true);
     } else {

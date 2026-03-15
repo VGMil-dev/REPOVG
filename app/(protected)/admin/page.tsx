@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Users, Key, BookOpen, Settings, BarChart3, Shield, ArrowRight } from "lucide-react";
+import { Users, Key, BookOpen, Settings, BarChart3, Shield, ArrowRight, MessageSquare } from "lucide-react";
 import { AdminTemplate } from "@/components/templates/AdminTemplate";
 
 export default async function AdminPage() {
@@ -74,6 +74,18 @@ export default async function AdminPage() {
       glow: "shadow-[0_0_20px_rgba(34,197,94,0.05)]",
       hoverGlow: "group-hover:shadow-[0_0_30px_rgba(34,197,94,0.15)]",
       accent: "bg-brand-500/10"
+    },
+    {
+      href: "/admin/mascota",
+      icon: MessageSquare,
+      label: "Mascota",
+      desc: "LABORATORIO DE PRUEBAS PARA ANIMACIONES Y MENSAJES",
+      color: "text-orange-500",
+      borderColor: "border-orange-500/20",
+      hoverBorder: "hover:border-orange-500/50",
+      glow: "shadow-[0_0_20px_rgba(249,115,22,0.05)]",
+      hoverGlow: "group-hover:shadow-[0_0_30px_rgba(249,115,22,0.15)]",
+      accent: "bg-orange-500/10"
     },
     {
       href: "/admin/configuracion",
