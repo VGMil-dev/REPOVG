@@ -34,15 +34,22 @@ export function MascotTopicSync({
     };
     setChatContext(ctx);
 
-    // Optional greeting
-    if (conceptosClave.length > 0) {
-      const t = setTimeout(() => {
-        say(`Nuevo tema detectado. Cuéntame qué estás aprendiendo`, "question", 7000);
-        setState("curious");
-      }, 2500);
-      return () => clearTimeout(t);
+    // Get a predefined question for the topic
+    if (temaSlug && materiaId) {
+      import("@/lib/mascot/actions").then(({ getMascotaPregunta }) => {
+        getMascotaPregunta(materiaId, temaSlug).then((data) => {
+          if (data) {
+            say(data.pregunta, "question", 8000);
+            setState("curious");
+          } else if (conceptosClave.length > 0) {
+            // Fallback
+            say(`Nuevo tema detectado: ${temaTitulo}. Cuéntame qué estás aprendiendo`, "question", 7000);
+            setState("curious");
+          }
+        });
+      });
     }
-  }, [temaSlug]);
+  }, [temaSlug, materiaId, materiaSlug, temaTitulo, conceptosClave]);
 
   return null;
 }

@@ -1,17 +1,20 @@
 {
   "saludos": [
     "hola", "buenas", "hey", "hi", "buenos dias", "buenas tardes",
-    "buenas noches", "ola", "que tal", "como estas", "como andas"
+    "buenas noches", "ola", "que tal", "como estas", "como andas",
+    "saludos", "holi", "holas"
   ],
   "confusion": [
     "no se", "no sé", "no entiendo", "no comprendo", "no tengo idea",
     "estoy perdido", "no se nada", "ayuda", "help", "socorro",
-    "no me queda claro", "no lo entiendo", "me perdi", "me perdí"
+    "no me queda claro", "no lo entiendo", "me perdi", "me perdí",
+    "explicame de nuevo", "dame una pista", "no capté", "no capte"
   ],
   "afirmaciones": [
     "ok", "okey", "okay", "listo", "entendi", "entendí", "claro",
     "perfecto", "genial", "bien", "dale", "si", "sí", "ya",
-    "de acuerdo", "entiendo", "comprendo", "tiene sentido"
+    "de acuerdo", "entiendo", "comprendo", "tiene sentido",
+    "correcto", "exacto", "asi es", "así es"
   ],
   "agradecimiento": [
     "gracias", "thanks", "thank you", "grax", "grcs", "muchas gracias",

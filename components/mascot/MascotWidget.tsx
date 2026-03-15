@@ -47,7 +47,7 @@ export function MascotWidget({ forceVisible: forceVisibleProp = false }: MascotW
   if (!isVisible) return null;
 
   const currentAnimation: AnimationType =
-    state === "idle" ? "idle" :
+    state === "idle" || state === "think" || state === "learning" || state === "worry" ? "idle" :
       state === "putbrain" ? "putbrain" :
         state === "celebrate" ? "celebrate" :
           "welcome";

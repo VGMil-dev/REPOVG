@@ -62,7 +62,8 @@ export async function registrarAprendido(
 
 function validarLocalmente(
   userMsg: string,
-  conceptosClave: string[]
+  conceptosClave: string[],
+  intentosFallidos: number
 ): { valido: boolean; encontrados: string[] } {
   if (conceptosClave.length === 0) return { valido: false, encontrados: [] };
 
@@ -72,7 +73,12 @@ function validarLocalmente(
     return msgLower.includes(cLower);
   });
 
-  const umbral = Math.ceil(conceptosClave.length * 0.4);
+  // Umbral progresivo: 40% -> 30% -> 20%
+  let umbralPct = 0.4;
+  if (intentosFallidos === 2) umbralPct = 0.3;
+  if (intentosFallidos >= 3) umbralPct = 0.2;
+
+  const umbral = Math.ceil(conceptosClave.length * umbralPct);
   return { valido: encontrados.length >= umbral, encontrados };
 }
 
@@ -93,7 +99,7 @@ export async function chatWithMascot(params: {
 
   // ── Phase 1: Local keyword check (always first, free) ────────────────────
   if (context.conceptosClave.length > 0) {
-    const { valido, encontrados } = validarLocalmente(userMsg, context.conceptosClave);
+    const { valido, encontrados } = validarLocalmente(userMsg, context.conceptosClave, intentosFallidos);
 
     if (valido) {
       if (context.materiaId && context.temaSlug && encontrados.length > 0) {
@@ -115,7 +121,9 @@ export async function chatWithMascot(params: {
     }
 
     // Failed attempt — local only (0-2 attempts)
-    if (intentosFallidos < 2) {
+    // El 3er intento fallido aún es local pero con umbral más bajo (validado arriba)
+    // Si sigue fallando tras 3 intentos, pasamos a Gemini
+    if (intentosFallidos < 3) {
       const frase = await getFraseEvento("intento_fallido");
       return {
         texto: frase ?? "Hmm, no entendi bien. Puedes intentarlo de otra forma?",
@@ -371,6 +379,8 @@ DOMINIO ESTRICTO: Solo puedes hablar de programación, algoritmos, estructuras d
 ${temaCtx}
 ${conceptosList}
 
+NARRATIVA DE NÚCLEO COGNITIVO: Si el estudiante está bloqueado (no entiende el concepto tras varios intentos), intervienes usando tu "núcleo cognitivo" (IA). Puedes mencionar frases como "Activando mi núcleo cognitivo para procesar esto mejor..." o "Consultando mi base de datos interna profunda...".
+
 ${sinTema ? `MODO DASHBOARD (sin tema activo): El estudiante no está en ningún tema. Tu objetivo es motivarlo a abrir una materia. NO sugieras temas propios — dile que explore las materias disponibles en el panel. Si pregunta sobre programación en general, responde brevemente y redirige a "abre una materia para practicar juntos".` : `MODO TEMA ACTIVO: Usa el "Efecto Protégé" — el estudiante te ENSEÑA el concepto a ti, y tú validas si lo entendiste correctamente.`}
 
 SIEMPRE responde con JSON válido con esta estructura exacta (sin saltos de línea dentro de los strings):
@@ -385,9 +395,9 @@ SIEMPRE responde con JSON válido con esta estructura exacta (sin saltos de lín
 Reglas:
 - NUNCA sugieras temas fuera de programación/tecnología
 - En modo tema activo: nunca reveles la respuesta directamente, guía con preguntas socráticas
+- Si el estudiante te pide la respuesta: recuerda que eres tú quien está aprendiendo de él. Pide una pista en su lugar.
 - Si explicó bien un concepto: mascotState="celebrate", debeRegistrarAprendido=true
-- Si la explicación es parcial: mascotState="think", haz una pregunta socrática
-- Si hace una pregunta directa: responde brevemente y reformula tu pregunta
+- Si la explicación es parcial: mascotState="think", haz una pregunta socrática o pide que desarrolle un punto específico.
 - esBloqueoReal=true solo si claramente no comprende nada tras múltiples intentos
 - texto máximo 150 caracteres, sin saltos de línea`;
 }
