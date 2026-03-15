@@ -14,6 +14,7 @@ interface Props {
 export default function AsignarAccesoForm({ usuarios, materias, semestres }: Props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [tipo, setTipo] = useState<"activo" | "historico">("activo");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -83,7 +84,13 @@ export default function AsignarAccesoForm({ usuarios, materias, semestres }: Pro
                     <Typography variant="terminal-sm" className="!text-brand-500/50 uppercase">Protocolo</Typography>
                     <div className="relative group/field">
                       <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-500/30 group-focus-within/field:text-brand-500 transition-colors" />
-                      <select name="tipo" className="w-full bg-black/40 border-2 border-brand-500/10 rounded-xl py-3 pl-10 pr-4 font-terminal text-sm text-brand-300 focus:border-brand-500/40 focus:outline-none transition-all appearance-none" required>
+                      <select 
+                        name="tipo" 
+                        defaultValue="activo"
+                        onChange={(e) => setTipo(e.target.value as any)}
+                        className="w-full bg-black/40 border-2 border-brand-500/10 rounded-xl py-3 pl-10 pr-4 font-terminal text-sm text-brand-300 focus:border-brand-500/40 focus:outline-none transition-all appearance-none" 
+                        required
+                      >
                         <option value="activo" className="bg-[#050505]">ACTIVO</option>
                         <option value="historico" className="bg-[#050505]">HISTÓRICO</option>
                       </select>
@@ -100,6 +107,23 @@ export default function AsignarAccesoForm({ usuarios, materias, semestres }: Pro
                         ))}
                       </select>
                     </div>
+                  </div>
+                </div>
+
+                {/* Sección de Descripción / Info */}
+                <div className="bg-brand-500/5 border border-brand-500/20 rounded-xl p-4 flex gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="mt-0.5">
+                    <Key className="w-4 h-4 text-brand-500 opacity-50" />
+                  </div>
+                  <div className="space-y-1">
+                    <Typography variant="terminal-sm" className="!text-brand-500 font-bold uppercase tracking-wider">
+                      Nota de Protocolo
+                    </Typography>
+                    <Typography variant="terminal-sm" className="!text-brand-300/70 leading-relaxed text-[10px]">
+                      {tipo === 'activo' 
+                        ? "Permite cursar la materia actualmente: realizar ejercicios, ganar XP y interactuar con la mascota en tiempo real." 
+                        : "Acceso de consulta para materias aprobadas o periodos pasados. El progreso no afecta las métricas vigentes."}
+                    </Typography>
                   </div>
                 </div>
 

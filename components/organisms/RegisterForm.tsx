@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, User, ShieldCheck, UserPlus, Loader2 } from "lucide-react";
+import { Mail, Lock, User, UserPlus, Loader2 } from "lucide-react";
 import { FormField } from "../shared/FormField";
 import { Button } from "../ui/Button";
 
@@ -11,7 +11,7 @@ export const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nombre, setNombre] = useState("");
-  const [rol, setRol] = useState("estudiante");
+  const [rol, setRol] = useState("externo");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
