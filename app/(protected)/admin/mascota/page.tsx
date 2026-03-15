@@ -9,7 +9,7 @@ import { MascotWidget } from "@/components/mascot/MascotWidget";
 import { Play, MessageSquare, Info, AlertTriangle, CheckCircle, HelpCircle } from "lucide-react";
 
 export default function MascotTestPage() {
-  const { state, setState, say, clearMessages } = useMascot();
+  const { state, setState, say, clearBubble: clearMessages } = useMascot();
   const [customText, setCustomText] = useState("¡Hola recluta! Estoy listo para las pruebas.");
 
   const animations: { value: typeof state; label: string }[] = [

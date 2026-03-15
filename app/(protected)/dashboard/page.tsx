@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { BookOpen, ChevronRight, Star, Coins, TrendingUp, Lock } from "lucide-react";
 import { Typography } from "@/components/ui/Typography";
+import { MascotDashboardSync } from "@/components/mascot/MascotDashboardSync";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -56,6 +57,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-10">
+      <MascotDashboardSync mascotName={profile?.nombre_mascota ?? nombre} />
 
       {/* ── Encabezado ──────────────────────────────────────────────────────── */}
       <div className="space-y-1 pt-2">

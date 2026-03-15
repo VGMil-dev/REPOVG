@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 import ProfileSyncState from "@/components/layout/ProfileSyncState";
+import { MascotUserSync } from "@/components/mascot/MascotUserSync";
 
 export default async function ProtectedLayout({
   children,
@@ -26,6 +27,7 @@ export default async function ProtectedLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#050505]">
+      <MascotUserSync userId={user.id} />
       <Sidebar profile={profile} />
       <div className="flex flex-col flex-1 overflow-hidden">
         <Topbar profile={profile} />
