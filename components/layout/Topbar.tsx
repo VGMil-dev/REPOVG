@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react";
+import { LogOut, Star, Coins } from "lucide-react";
 import { logout } from "@/lib/auth/actions";
 import type { Profile } from "@/types";
 import { Typography } from "../ui/Typography";
@@ -11,13 +11,21 @@ export default function Topbar({ profile }: Props) {
   return (
     <header className="h-14 bg-[#050505] border-b border-brand-500/20 flex items-center justify-between px-6">
       {/* XP + Coins (solo para no-profesor) */}
-      {profile.rol !== "profesor" && (
+      {profile.rol !== "profesor" ? (
         <div className="flex items-center gap-4">
-          <Typography variant="body" as="span" className="!text-yellow-400 font-medium">⚡ {profile.xp_total} XP</Typography>
-          <Typography variant="body" as="span" className="!text-amber-400 font-medium">🪙 {profile.coins}</Typography>
+          <div className="flex items-center gap-1.5">
+            <Star className="w-3.5 h-3.5 text-yellow-500/70" />
+            <Typography variant="terminal-sm" as="span" className="!text-yellow-400">{profile.xp_total} XP</Typography>
+          </div>
+          <div className="w-px h-3 bg-white/10" />
+          <div className="flex items-center gap-1.5">
+            <Coins className="w-3.5 h-3.5 text-orange-500/70" />
+            <Typography variant="terminal-sm" as="span" className="!text-orange-400">{profile.coins}</Typography>
+          </div>
         </div>
-      )}
+      ) : (
         <Typography variant="terminal-sm" as="span" className="!text-gray-500">Panel del profesor</Typography>
+      )}
 
       {/* Perfil + logout */}
       <div className="flex items-center gap-3">
