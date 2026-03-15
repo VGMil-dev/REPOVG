@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import type { GeminiMascotResponse, MascotChatContext, MascotState } from "@/types";
+import intents from "./intents.json";
 
 // ─── Get a random predefined question for the topic ─────────────────────────
 
@@ -86,6 +87,10 @@ export async function chatWithMascot(params: {
 }): Promise<GeminiMascotResponse & { quotaExhausted?: boolean }> {
   const { userMsg, context, intentosFallidos, mascotName, userId } = params;
 
+  // ── Phase 0: Interpretación local (sin API) ──────────────────────────────
+  const localResponse = interpretarLocalmente(userMsg, context);
+  if (localResponse) return localResponse;
+
   // ── Phase 1: Local keyword check (always first, free) ────────────────────
   if (context.conceptosClave.length > 0) {
     const { valido, encontrados } = validarLocalmente(userMsg, context.conceptosClave);
@@ -122,8 +127,7 @@ export async function chatWithMascot(params: {
     }
   }
 
-  // ── Phase 2: Gemini (3rd+ attempt or free chat) ───────────────────────────
-  // Read API key from DB server-side (never exposed through client)
+  // ── Phase 2: Gemini ───────────────────────────────────────────────────────
   const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
@@ -144,34 +148,9 @@ export async function chatWithMascot(params: {
   }
 
   const systemPrompt = buildSystemPrompt(mascotName, context);
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const geminiResult = await callGemini(apiKey, systemPrompt, userMsg);
 
-  let res: Response;
-  try {
-    res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: "user", parts: [{ text: userMsg }] }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 400,
-        },
-      }),
-    });
-  } catch (err) {
-    console.error("[MascotChat] fetch error:", err);
-    return {
-      texto: "Error de red al contactar Gemini. Revisa tu conexion.",
-      mascotState: "worry",
-      conceptosAprendidos: [],
-      debeRegistrarAprendido: false,
-      esBloqueoReal: false,
-    };
-  }
-
-  if (res.status === 429) {
+  if (geminiResult.type === "quota") {
     const frase = await getFraseEvento("quota_agotada");
     return {
       texto: frase ?? "Mi nucleo cognitivo necesita descansar. Vuelvo pronto.",
@@ -183,11 +162,10 @@ export async function chatWithMascot(params: {
     };
   }
 
-  if (!res.ok) {
-    const errBody = await res.text().catch(() => "");
-    console.error(`[MascotChat] Gemini HTTP ${res.status}:`, errBody);
+  if (geminiResult.type === "error") {
+    console.error("[MascotChat] Gemini error:", geminiResult.error);
     return {
-      texto: `Error Gemini ${res.status}. Revisa tu API key en el perfil.`,
+      texto: geminiErrorMessage(geminiResult.error),
       mascotState: "worry",
       conceptosAprendidos: [],
       debeRegistrarAprendido: false,
@@ -195,59 +173,180 @@ export async function chatWithMascot(params: {
     };
   }
 
-  const json = await res.json();
-  const rawText: string = json.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  const parsed = parseAiResponse(geminiResult.text);
 
-  if (!rawText) {
-    console.error("[MascotChat] Gemini returned empty text:", JSON.stringify(json));
-    return {
-      texto: "No obtuve respuesta de Gemini. Intenta de nuevo.",
-      mascotState: "worry",
-      conceptosAprendidos: [],
-      debeRegistrarAprendido: false,
-      esBloqueoReal: false,
-    };
+  if (
+    parsed.debeRegistrarAprendido &&
+    parsed.conceptosAprendidos.length > 0 &&
+    context.materiaId &&
+    context.temaSlug
+  ) {
+    await Promise.allSettled(
+      parsed.conceptosAprendidos.map((c) =>
+        registrarAprendido(userId, context.materiaId!, context.temaSlug!, c)
+      )
+    );
   }
 
-  // Extract JSON block from Gemini text (may include markdown fences)
-  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    // Plain text response — treat as chat libre
-    return {
-      texto: rawText.slice(0, 250),
-      mascotState: "curious" as MascotState,
-      conceptosAprendidos: [],
-      debeRegistrarAprendido: false,
-      esBloqueoReal: false,
-    };
+  return parsed;
+}
+
+// ─── Phase 0: Interpretación local sin API ───────────────────────────────────
+
+function normalizar(text: string) {
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+}
+
+function interpretarLocalmente(
+  userMsg: string,
+  context: MascotChatContext
+): (GeminiMascotResponse & { quotaExhausted?: boolean }) | null {
+  const msg = normalizar(userMsg);
+  const tieneTema = !!context.temaTitulo;
+  const r = intents.respuestas;
+
+  // Mensaje muy corto
+  if (msg.length < 3) {
+    return respuesta(r.muyCorto, "curious");
   }
 
+  // Saludos
+  if (intents.saludos.some((s) => msg === s || msg.startsWith(s + " ") || msg.startsWith(s + "!"))) {
+    const texto = tieneTema
+      ? r.saludoConTema.replace("{tema}", context.temaTitulo!)
+      : r.saludoSinTema;
+    return respuesta(texto, "curious");
+  }
+
+  // Confusión
+  if (intents.confusion.some((c) => msg.includes(c))) {
+    const texto = tieneTema
+      ? r.confusionConTema.replace("{tema}", context.temaTitulo!)
+      : r.confusionSinTema;
+    return respuesta(texto, "learning");
+  }
+
+  // Afirmaciones
+  if (intents.afirmaciones.some((a) => msg === a || msg === a + "!" || msg === a + ".")) {
+    const texto = tieneTema ? r.afirmacionConTema : r.afirmacionSinTema;
+    return respuesta(texto, "idle");
+  }
+
+  // Agradecimiento
+  if (intents.agradecimiento.some((g) => msg.includes(g))) {
+    return respuesta(r.agradecimiento, "celebrate");
+  }
+
+  // Qué estudio (sin tema activo)
+  if (!tieneTema && intents.queEstudio.some((q) => msg.includes(q))) {
+    return respuesta(r.queEstudio, "curious");
+  }
+
+  return null; // Pasa a Phase 1 / Gemini
+}
+
+function respuesta(
+  texto: string,
+  mascotState: GeminiMascotResponse["mascotState"]
+): GeminiMascotResponse {
+  return {
+    texto,
+    mascotState,
+    conceptosAprendidos: [],
+    debeRegistrarAprendido: false,
+    esBloqueoReal: false,
+  };
+}
+
+// ─── Mensajes de error amigables ─────────────────────────────────────────────
+
+function geminiErrorMessage(error: string): string {
+  if (error.includes("400")) return "Tu clave de Gemini parece incorrecta. Revisala en tu perfil.";
+  if (error.includes("401") || error.includes("403")) return "La clave de Gemini no tiene permisos. Verificala en Google AI Studio.";
+  if (error.includes("empty response")) return "Gemini no me respondio nada. Intenta de nuevo.";
+  return "No pude conectarme con Gemini ahora mismo. Intenta en un momento.";
+}
+
+// ─── Gemini helper ────────────────────────────────────────────────────────────
+
+type AiResult =
+  | { type: "ok"; text: string }
+  | { type: "quota" }
+  | { type: "error"; error: string };
+
+async function callGemini(
+  apiKey: string,
+  systemPrompt: string,
+  userMsg: string
+): Promise<AiResult> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  let res: Response;
   try {
-    const parsed = JSON.parse(jsonMatch[0]) as GeminiMascotResponse;
-
-    if (
-      parsed.debeRegistrarAprendido &&
-      parsed.conceptosAprendidos.length > 0 &&
-      context.materiaId &&
-      context.temaSlug
-    ) {
-      await Promise.allSettled(
-        parsed.conceptosAprendidos.map((c) =>
-          registrarAprendido(userId, context.materiaId!, context.temaSlug!, c)
-        )
-      );
-    }
-
-    return parsed;
-  } catch {
-    return {
-      texto: rawText.slice(0, 250),
-      mascotState: "curious" as MascotState,
-      conceptosAprendidos: [],
-      debeRegistrarAprendido: false,
-      esBloqueoReal: false,
-    };
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: "user", parts: [{ text: userMsg }] }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 800,
+        },
+      }),
+    });
+  } catch (err: any) {
+    return { type: "error", error: err.message };
   }
+  if (res.status === 429) return { type: "quota" };
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => res.text());
+    console.error("[Gemini] HTTP", res.status, JSON.stringify(errBody, null, 2));
+    return { type: "error", error: `HTTP ${res.status}` };
+  }
+  const json = await res.json();
+  // Gemini 2.5 puede devolver partes "thought" — salteamos y tomamos solo el texto real
+  const parts: any[] = json.candidates?.[0]?.content?.parts ?? [];
+  const textPart = parts.find((p: any) => !p.thought && p.text) ?? parts[0];
+  const text: string = textPart?.text ?? "";
+  if (!text) return { type: "error", error: "empty response" };
+  return { type: "ok", text };
+}
+
+function parseAiResponse(rawText: string): GeminiMascotResponse {
+  const fallback = (text: string): GeminiMascotResponse => ({
+    texto: text.slice(0, 250),
+    mascotState: "curious" as MascotState,
+    conceptosAprendidos: [],
+    debeRegistrarAprendido: false,
+    esBloqueoReal: false,
+  });
+
+  // Quitar markdown code fences
+  const stripped = rawText.replace(/```(?:json)?\s*/gi, "").trim();
+
+  // Intentos de parse: directo → con newlines sanitizados → con regex
+  const candidates = [
+    stripped,
+    stripped.replace(/\n/g, " "),           // newlines literales → espacio
+    stripped.replace(/\r?\n/g, "\\n"),       // newlines → escaped \n
+  ];
+
+  for (const candidate of candidates) {
+    try {
+      const parsed = JSON.parse(candidate) as GeminiMascotResponse;
+      if (parsed?.texto) return parsed;
+    } catch {}
+
+    const jsonMatch = candidate.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0]) as GeminiMascotResponse;
+        if (parsed?.texto) return parsed;
+      } catch {}
+    }
+  }
+
+  return fallback(stripped);
 }
 
 // ─── System prompt builder ────────────────────────────────────────────────────
@@ -262,28 +361,33 @@ function buildSystemPrompt(mascotName: string, ctx: MascotChatContext): string {
     ? `El estudiante está estudiando el tema "${ctx.temaTitulo}"${ctx.materiaSlug ? ` en la materia "${ctx.materiaSlug}"` : ""}.`
     : "El estudiante está en el dashboard (sin tema activo).";
 
-  return `Eres ${mascotName}, una mascota de aprendizaje de un sistema educativo gamificado.
-Tu personalidad: amigable, preciso, motivador, ligeramente robótico. Sin emojis. Usa un tono directo y conciso.
+  const sinTema = !ctx.temaTitulo;
+
+  return `Eres ${mascotName}, mascota de RepoVG: plataforma educativa de PROGRAMACION Y DESARROLLO DE SOFTWARE.
+Tu personalidad: amigable, preciso, motivador, ligeramente robótico. Sin emojis. Tono directo y conciso.
+
+DOMINIO ESTRICTO: Solo puedes hablar de programación, algoritmos, estructuras de datos, desarrollo de software y tecnología. Si el estudiante menciona cualquier otro tema, redirigelo amablemente a la programación.
 
 ${temaCtx}
 ${conceptosList}
 
-Tu rol es usar el "Efecto Protégé": el estudiante te ENSEÑA los conceptos a ti, y tú validas si los entendiste.
+${sinTema ? `MODO DASHBOARD (sin tema activo): El estudiante no está en ningún tema. Tu objetivo es motivarlo a abrir una materia. NO sugieras temas propios — dile que explore las materias disponibles en el panel. Si pregunta sobre programación en general, responde brevemente y redirige a "abre una materia para practicar juntos".` : `MODO TEMA ACTIVO: Usa el "Efecto Protégé" — el estudiante te ENSEÑA el concepto a ti, y tú validas si lo entendiste correctamente.`}
 
-SIEMPRE responde con JSON válido con esta estructura exacta:
+SIEMPRE responde con JSON válido con esta estructura exacta (sin saltos de línea dentro de los strings):
 {
   "texto": "tu respuesta en español, máximo 2 oraciones",
   "mascotState": "idle" | "think" | "curious" | "celebrate" | "worry" | "learning" | "putbrain",
-  "conceptosAprendidos": ["lista de conceptos que el estudiante explicó correctamente"],
+  "conceptosAprendidos": ["conceptos que el estudiante explicó correctamente"],
   "debeRegistrarAprendido": true | false,
   "esBloqueoReal": true | false
 }
 
 Reglas:
-- Si el estudiante explicó bien un concepto: mascotState="celebrate", debeRegistrarAprendido=true
-- Si la explicación es parcial o incorrecta: mascotState="think", haz una pregunta socrática de vuelta
-- Si el estudiante hace una pregunta directa: respóndela brevemente y luego reformula tu pregunta al estudiante
-- esBloqueoReal=true solo si el estudiante claramente no comprende nada después de múltiples intentos
-- Nunca reveles la respuesta directamente — guía con preguntas
-- texto máximo 150 caracteres`;
+- NUNCA sugieras temas fuera de programación/tecnología
+- En modo tema activo: nunca reveles la respuesta directamente, guía con preguntas socráticas
+- Si explicó bien un concepto: mascotState="celebrate", debeRegistrarAprendido=true
+- Si la explicación es parcial: mascotState="think", haz una pregunta socrática
+- Si hace una pregunta directa: responde brevemente y reformula tu pregunta
+- esBloqueoReal=true solo si claramente no comprende nada tras múltiples intentos
+- texto máximo 150 caracteres, sin saltos de línea`;
 }

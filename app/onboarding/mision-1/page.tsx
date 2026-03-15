@@ -144,9 +144,7 @@ export default function Mission1Page() {
             </div>
 
             {/* Formulario */}
-            <div
-              className="border-2 border-brand-500/20 bg-black/60 backdrop-blur-xl p-8 rounded-2xl shadow-[0_0_50px_rgba(34,197,94,0.05)] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300"
-            >
+            <div className="border-2 border-brand-500/20 bg-black/60 backdrop-blur-xl p-8 rounded-2xl shadow-[0_0_50px_rgba(34,197,94,0.05)] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
               <div className="flex items-start gap-4 p-4 bg-brand-500/5 border border-brand-500/10 rounded-xl mb-6">
                 <Brain className="w-8 h-8 text-brand-500 shrink-0 mt-1" />
                 <div>
@@ -241,7 +239,6 @@ export default function Mission1Page() {
         ) : (
           /* Pantalla de recompensa */
           <div className="border-2 border-brand-500 bg-brand-500/5 backdrop-blur-xl p-12 rounded-2xl shadow-[0_0_80px_rgba(34,197,94,0.15)] animate-in fade-in zoom-in duration-500 flex flex-col items-center gap-8">
-            {/* Badge cerebrito */}
             <div className="relative animate-in zoom-in duration-500 delay-100">
               <div className="w-24 h-24 bg-brand-500 rounded-full flex items-center justify-center shadow-[0_0_60px_rgba(34,197,94,0.7)]">
                 <Brain className="w-12 h-12 text-black" />
@@ -264,7 +261,6 @@ export default function Mission1Page() {
               </Typography>
             </div>
 
-            {/* Recompensas */}
             <div className="flex gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
               <div className="flex flex-col items-center gap-2 px-6 py-4 bg-black/40 border border-yellow-500/30 rounded-xl shadow-[0_0_20px_rgba(234,179,8,0.1)]">
                 <Star className="w-6 h-6 text-yellow-400" />
@@ -286,7 +282,6 @@ export default function Mission1Page() {
               </div>
             </div>
 
-            {/* Botón para continuar */}
             <button
               onClick={() => router.push("/onboarding/mision-2")}
               className="btn-primary w-full py-5 flex items-center justify-center gap-3 group text-lg animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500"

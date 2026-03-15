@@ -1,4 +1,5 @@
 import { LogOut, Star, Coins } from "lucide-react";
+import Link from "next/link";
 import { logout } from "@/lib/auth/actions";
 import type { Profile } from "@/types";
 import { Typography } from "../ui/Typography";
@@ -29,7 +30,9 @@ export default function Topbar({ profile }: Props) {
 
       {/* Perfil + logout */}
       <div className="flex items-center gap-3">
-        <Typography variant="body-sm" as="span" className="!text-gray-300">{profile.nombre}</Typography>
+        <Link href="/profile">
+          <Typography variant="body-sm" as="span" className="!text-gray-300 hover:text-white transition-colors cursor-pointer">{profile.nombre}</Typography>
+        </Link>
         <form action={logout}>
           <button
             type="submit"

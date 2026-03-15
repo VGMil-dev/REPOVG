@@ -1,0 +1,36 @@
+{
+  "saludos": [
+    "hola", "buenas", "hey", "hi", "buenos dias", "buenas tardes",
+    "buenas noches", "ola", "que tal", "como estas", "como andas"
+  ],
+  "confusion": [
+    "no se", "no sé", "no entiendo", "no comprendo", "no tengo idea",
+    "estoy perdido", "no se nada", "ayuda", "help", "socorro",
+    "no me queda claro", "no lo entiendo", "me perdi", "me perdí"
+  ],
+  "afirmaciones": [
+    "ok", "okey", "okay", "listo", "entendi", "entendí", "claro",
+    "perfecto", "genial", "bien", "dale", "si", "sí", "ya",
+    "de acuerdo", "entiendo", "comprendo", "tiene sentido"
+  ],
+  "agradecimiento": [
+    "gracias", "thanks", "thank you", "grax", "grcs", "muchas gracias",
+    "te lo agradezco"
+  ],
+  "queEstudio": [
+    "que estudio", "que aprendo", "que veo", "por donde empiezo",
+    "que hago", "que puedo", "como empiezo", "por donde empezar",
+    "que tema", "que materia"
+  ],
+  "respuestas": {
+    "muyCorto":        "Escribe algo mas para que pueda entenderte.",
+    "saludoConTema":   "Hola. Estoy listo para aprender sobre \"{tema}\". Explicame el concepto cuando quieras.",
+    "saludoSinTema":   "Hola. Abre una materia del panel y ensenme algun concepto de programacion.",
+    "confusionConTema":"No hay problema. Intenta explicarme con tus propias palabras cualquier parte de \"{tema}\".",
+    "confusionSinTema":"Tranquilo. Abre un tema en el panel y empieza por lo primero que veas.",
+    "afirmacionConTema":"Bien. Cuando quieras, explicame el siguiente concepto.",
+    "afirmacionSinTema":"Bien. Entra a una materia y ensenme algo de programacion.",
+    "agradecimiento":  "De nada. Eso es lo que estoy aqui para hacer.",
+    "queEstudio":      "Abre cualquier materia del panel y empieza por el primer tema. Yo te ayudo desde ahi."
+  }
+}

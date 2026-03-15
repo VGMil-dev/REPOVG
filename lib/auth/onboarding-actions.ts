@@ -22,7 +22,6 @@ export async function validateGeminiKey(apiKey: string) {
 
     if (!user) throw new Error("No autenticado");
 
-    // Leer valores actuales para incrementar
     const { data: profile, error: fetchError } = await supabase
       .from("profiles")
       .select("xp_total, coins, onboarding_step")
@@ -165,7 +164,6 @@ export async function completarMision3(mascotName: string, mascotSprite: string)
     // 5. Usar adminClient para operaciones que requieren service_role
     const admin = createAdminClient();
 
-    // Obtener IDs de achievement y cosmético
     const [{ data: achievement }, { data: cosmetic }] = await Promise.all([
       admin.from("achievements").select("id").eq("slug", "mascota_activada").single(),
       admin.from("cosmetics").select("id").eq("slug", "badge_protocolo_vinculacion").single(),
@@ -205,10 +203,10 @@ export async function completarMision3(mascotName: string, mascotSprite: string)
     await admin
       .from("xp_log")
       .insert({
-        user_id:      user.id,
+        user_id:        user.id,
         cantidad_xp:    MISION_3_REWARD.xp,
         cantidad_coins: MISION_3_REWARD.coins,
-        motivo:       "mision_3_completada",
+        motivo:         "mision_3_completada",
       });
 
     return { success: true, alreadyClaimed: false };

@@ -24,7 +24,7 @@ interface Props {
 
 const navEstudiante = [
   { href: "/dashboard", label: "Inicio", icon: Home },
-  { href: "/perfil", label: "Mi perfil", icon: Users },
+  { href: "/profile", label: "Mi perfil", icon: Users },
 ];
 
 const navProfesor = [

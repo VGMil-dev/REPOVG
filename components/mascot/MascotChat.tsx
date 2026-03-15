@@ -138,7 +138,7 @@ export function MascotChat({ userId }: MascotChatProps) {
       const errMsg: ChatMessage = {
         id: makeId(),
         role: "mascot",
-        text: "Error de conexion. Intenta de nuevo.",
+        text: "Tuve un problema de conexion. Intenta de nuevo.",
         trigger: "sistema",
         timestamp: Date.now(),
       };

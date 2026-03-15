@@ -12,6 +12,10 @@ export interface Profile {
   coins: number;
   nombre_mascota: string | null;
   github_username: string | null;
+  gemini_api_key_enc: string | null;
+  onboarding_step: number;
+  mascot_sprite: string | null;
+  mascot_cosmetic: string | null;
   created_at: string;
 }
 

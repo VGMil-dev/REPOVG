@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { BookOpen, ChevronRight, Star, Coins, TrendingUp, Lock } from "lucide-react";
+import { BookOpen, ChevronRight, Star, Coins, TrendingUp, Lock, UserCircle } from "lucide-react";
 import { Typography } from "@/components/ui/Typography";
 import { MascotDashboardSync } from "@/components/mascot/MascotDashboardSync";
 
@@ -60,13 +60,24 @@ export default async function DashboardPage() {
       <MascotDashboardSync mascotName={profile?.nombre_mascota ?? nombre} />
 
       {/* ── Encabezado ──────────────────────────────────────────────────────── */}
-      <div className="space-y-1 pt-2">
-        <Typography variant="pixel-badge" className="!text-brand-500/50 uppercase">
-          Bienvenido de vuelta
-        </Typography>
-        <Typography as="h1" variant="brand-h2" className="!text-white">
-          {nombre.toUpperCase()}
-        </Typography>
+      <div className="flex items-end justify-between pt-2">
+        <div className="space-y-1">
+          <Typography variant="pixel-badge" className="!text-brand-500/50 uppercase">
+            Bienvenido de vuelta
+          </Typography>
+          <Typography as="h1" variant="brand-h2" className="!text-white">
+            {nombre.toUpperCase()}
+          </Typography>
+        </div>
+        <Link
+          href="/profile"
+          className="flex items-center gap-2 px-3 py-2 bg-black/40 border border-white/5 hover:border-brand-500/30 rounded-xl text-gray-500 hover:text-brand-400 transition-all group"
+        >
+          <UserCircle className="w-4 h-4" />
+          <Typography variant="terminal-sm" className="!text-inherit uppercase tracking-widest text-[10px]">
+            Mi perfil
+          </Typography>
+        </Link>
       </div>
 
       {/* ── Stats ────────────────────────────────────────────────────────────── */}
