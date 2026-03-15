@@ -11,7 +11,14 @@ const WIDGET_SCALE = 0.6;
 const WIDGET_PX = SPRITE_SIZE * WIDGET_SCALE; // px que ocupa en pantalla
 
 export function MascotWidget({ forceVisible: forceVisibleProp = false }: { forceVisible?: boolean }) {
-  const { name, state, setState, messages } = useMascot();
+  const { name, state, setState, messages, sprite } = useMascot();
+
+  const SPRITE_FILTERS: Record<string, string> = {
+    default: "none",
+    fire:    "hue-rotate(30deg) saturate(1.6)",
+    ice:     "hue-rotate(180deg) saturate(0.8) brightness(1.2)",
+    dark:    "hue-rotate(270deg) saturate(0.5) brightness(0.7)",
+  };
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
 
@@ -83,12 +90,13 @@ export function MascotWidget({ forceVisible: forceVisibleProp = false }: { force
             position: "absolute",
             bottom: 0,
             right: 0,
+            filter: SPRITE_FILTERS[sprite] ?? "none",
           }}
         >
           <MascotSprite
             animation={currentAnimation}
             onReturnToIdle={() => setState("idle")}
-            className={`drop-shadow-[0_0_12px_rgba(34,197,94,0.4)]`}
+            className="drop-shadow-[0_0_12px_rgba(34,197,94,0.4)]"
           />
         </div>
       </div>

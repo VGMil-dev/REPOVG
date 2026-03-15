@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 
 type MascotState = "idle" | "think" | "curious" | "celebrate" | "worry" | "learning" | "putbrain";
 
+export type MascotSpriteVariant = "default" | "fire" | "ice" | "dark";
+
 interface MascotMessage {
   id: string;
   text: string;
@@ -14,6 +16,8 @@ interface MascotMessage {
 interface MascotContextType {
   name: string;
   setName: (name: string) => void;
+  sprite: MascotSpriteVariant;
+  setSprite: (sprite: MascotSpriteVariant) => void;
   state: MascotState;
   setState: (state: MascotState) => void;
   messages: MascotMessage[];
@@ -23,20 +27,30 @@ interface MascotContextType {
 
 const MascotContext = createContext<MascotContextType | undefined>(undefined);
 
+const VALID_SPRITES: MascotSpriteVariant[] = ["default", "fire", "ice", "dark"];
+
 export function MascotProvider({ children }: { children: React.ReactNode }) {
   const [name, setNameState] = useState<string>("Compañero");
+  const [sprite, setSpriteState] = useState<MascotSpriteVariant>("default");
   const [state, setState] = useState<MascotState>("idle");
   const [messages, setMessages] = useState<MascotMessage[]>([]);
 
-  // Cargamos el nombre desde localStorage si existe
   useEffect(() => {
     const savedName = localStorage.getItem("repovg_mascot_name");
     if (savedName) setNameState(savedName);
+
+    const savedSprite = localStorage.getItem("repovg_mascot_sprite") as MascotSpriteVariant | null;
+    if (savedSprite && VALID_SPRITES.includes(savedSprite)) setSpriteState(savedSprite);
   }, []);
 
   const setName = (newName: string) => {
     setNameState(newName);
     localStorage.setItem("repovg_mascot_name", newName);
+  };
+
+  const setSprite = (s: MascotSpriteVariant) => {
+    setSpriteState(s);
+    localStorage.setItem("repovg_mascot_sprite", s);
   };
 
   const say = useCallback((text: string, type: MascotMessage["type"] = "info", duration = 5000) => {
@@ -55,7 +69,7 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
   const clearMessages = () => setMessages([]);
 
   return (
-    <MascotContext.Provider value={{ name, setName, state, setState, messages, say, clearMessages }}>
+    <MascotContext.Provider value={{ name, setName, sprite, setSprite, state, setState, messages, say, clearMessages }}>
       {children}
     </MascotContext.Provider>
   );

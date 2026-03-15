@@ -22,6 +22,7 @@ interface Props {
   children: React.ReactNode;
   className?: string;
   glow?: boolean;
+  style?: React.CSSProperties;
 }
 
 const variantStyles: Record<TypographyVariant, string> = {
@@ -44,12 +45,13 @@ const glowStyles: Partial<Record<TypographyVariant, string>> = {
   "brand-h2": "text-glow-orange",
 };
 
-export const Typography = ({ 
-  as: Component = "p", 
-  variant = "body", 
-  children, 
-  className = "", 
-  glow = false 
+export const Typography = ({
+  as: Component = "p",
+  variant = "body",
+  children,
+  className = "",
+  glow = false,
+  style,
 }: Props) => {
   const styles = [
     variantStyles[variant],
@@ -58,7 +60,7 @@ export const Typography = ({
   ].filter(Boolean).join(" ");
 
   return (
-    <Component className={styles}>
+    <Component className={styles} style={style}>
       {children}
     </Component>
   );
