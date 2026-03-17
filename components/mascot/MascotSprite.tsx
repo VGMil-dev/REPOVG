@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-export type AnimationType = "idle" | "welcome" | "putbrain" | "celebrate";
+export type AnimationType = "idle" | "welcome" | "putbrain" | "celebrate" | "learning";
 
 const ONE_SHOT: ReadonlySet<AnimationType> = new Set(["welcome", "putbrain", "celebrate"]);
 
@@ -11,7 +11,7 @@ const ONE_SHOT: ReadonlySet<AnimationType> = new Set(["welcome", "putbrain", "ce
 const SHEET_URL  = "/global/spritesheet_mascot.png";
 const CELL       = 256;
 const MAX_FRAMES = 63;
-const NUM_ROWS   = 4;
+const NUM_ROWS   = 5;
 const SHEET_W    = CELL * MAX_FRAMES;   // 16128
 const SHEET_H    = CELL * NUM_ROWS;     // 1024
 
@@ -28,6 +28,7 @@ const ANIMATIONS: Record<AnimationType, {
   welcome:   { row: 1, frames: 20, durationMs: 1200, yShift:  0, loops: 1 },
   putbrain:  { row: 2, frames: 63, durationMs: 2500, yShift: 44, loops: 1 },
   celebrate: { row: 3, frames: 18, durationMs: 1200, yShift:  0, loops: 2 },
+  learning:  { row: 4, frames: 37, durationMs: 2500, yShift:  0, loops: 1 },
 };
 
 interface MascotSpriteProps {
