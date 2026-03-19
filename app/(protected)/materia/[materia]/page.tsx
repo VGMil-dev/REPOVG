@@ -1,5 +1,5 @@
 import { createClient } from "@/infrastructure/supabase/server";
-import { getTopicsByMateria } from "@/infrastructure/content/mdx";
+import { getMateriaBySlug } from "@/infrastructure/content/db-reader";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Typography } from "@/components/ui/Typography";
@@ -39,24 +39,15 @@ export default async function MateriaPage({ params }: Props) {
 
   if (!acceso && profile?.rol !== "profesor") redirect("/dashboard");
 
-  // Obtener topics y progreso
-  const topics = getTopicsByMateria(materiaSlug);
+  // Obtener contenido desde DB y progreso
+  const [dbMateria, progresoRes] = await Promise.all([
+    getMateriaBySlug(materiaSlug),
+    supabase.from("topic_progress").select("*").eq("user_id", user.id).eq("materia_id", materia.id),
+  ]);
 
-  const { data: progreso } = await supabase
-    .from("topic_progress")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("materia_id", materia.id);
-
-  const progresoMap = new Map(progreso?.map((p) => [p.tema_slug, p.estado]) ?? []);
-
-  // Agrupar por sección
-  const sections = new Map<string, typeof topics>();
-  for (const topic of topics) {
-    const sec = topic.frontmatter.seccion;
-    if (!sections.has(sec)) sections.set(sec, []);
-    sections.get(sec)!.push(topic);
-  }
+  const progresoMap = new Map(progresoRes.data?.map((p) => [p.tema_slug, p.estado]) ?? []);
+  const secciones = dbMateria?.secciones ?? [];
+  const totalTemas = secciones.reduce((acc, s) => acc + s.temas.length, 0);
 
   return (
     <div className="max-w-3xl">
@@ -68,28 +59,33 @@ export default async function MateriaPage({ params }: Props) {
         <Typography variant="body-sm">{materia.descripcion}</Typography>
       </div>
 
-      {topics.length === 0 ? (
+      {totalTemas === 0 ? (
         <div className="card text-center py-12">
           <Typography variant="brand-h1" className="mb-3">🚧</Typography>
           <Typography variant="body">El contenido de esta materia está siendo preparado.</Typography>
         </div>
       ) : (
         <div className="space-y-8">
-          {Array.from(sections.entries()).map(([seccion, temas]) => (
-            <div key={seccion}>
-              <Typography variant="terminal-sm" as="h2" className="font-semibold !text-gray-500 uppercase tracking-wider mb-3">
-                {seccion}
-              </Typography>
+          {secciones.map((seccion) => (
+            <div key={seccion.id}>
+              {seccion.slug !== "__root__" && (
+                <Typography variant="terminal-sm" as="h2" className="font-semibold !text-gray-500 uppercase tracking-wider mb-3">
+                  {seccion.titulo}
+                </Typography>
+              )}
               <div className="space-y-2">
-                {temas.map((topic) => {
-                  const estado = progresoMap.get(topic.slugPath) ?? "disponible";
+                {seccion.temas.map((tema) => {
+                  const slugPath = seccion.slug === "__root__"
+                    ? tema.slug
+                    : `${seccion.slug}/${tema.slug}`;
+                  const estado = progresoMap.get(slugPath) ?? "disponible";
                   const cfg = ESTADO_CONFIG[estado as keyof typeof ESTADO_CONFIG] ?? ESTADO_CONFIG.disponible;
                   const bloqueado = estado === "bloqueado";
 
                   return (
                     <Link
-                      key={topic.slugPath}
-                      href={bloqueado ? "#" : `/materia/${materiaSlug}/${topic.slugPath}`}
+                      key={tema.id}
+                      href={bloqueado ? "#" : `/materia/${materiaSlug}/${slugPath}`}
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all ${
                         bloqueado
                           ? "border-gray-800 cursor-not-allowed opacity-50"
@@ -99,12 +95,9 @@ export default async function MateriaPage({ params }: Props) {
                       <Typography as="span" variant="body-lg">{cfg.icon}</Typography>
                       <div className="flex-1">
                         <Typography as="span" variant="body" className={`font-medium ${bloqueado ? "!text-gray-600" : "!text-white"}`}>
-                          {topic.frontmatter.titulo}
+                          {tema.titulo}
                         </Typography>
                       </div>
-                      <Typography as="span" variant="terminal-sm" className="!text-gray-600">
-                        {"⭐".repeat(topic.frontmatter.dificultad)}
-                      </Typography>
                     </Link>
                   );
                 })}
