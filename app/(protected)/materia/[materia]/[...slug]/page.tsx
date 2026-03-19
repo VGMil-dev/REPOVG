@@ -1,17 +1,31 @@
 import { createClient } from "@/infrastructure/supabase/server";
-import { getTopic, getTopicsByMateria } from "@/infrastructure/content/mdx";
+import { getMateriaBySlug, getTemaFromDB } from "@/infrastructure/content/db-reader";
 import { redirect, notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { markTopicVisto } from "@/features/progress/services/actions";
 import Link from "next/link";
+import type { DBSeccion, DBTema } from "@/infrastructure/content/models";
 
 interface Props {
   params: Promise<{ materia: string; slug: string[] }>;
 }
 
+type SeccionConTemas = DBSeccion & { temas: DBTema[] };
+
+function buildSlugPath(seccion: SeccionConTemas, tema: DBTema): string {
+  return seccion.slug === "__root__" ? tema.slug : `${seccion.slug}/${tema.slug}`;
+}
+
+function flattenTemas(secciones: SeccionConTemas[]): { slugPath: string; tema: DBTema; seccion: SeccionConTemas }[] {
+  return secciones.flatMap((sec) =>
+    sec.temas.map((tema) => ({ slugPath: buildSlugPath(sec, tema), tema, seccion: sec }))
+  );
+}
+
 export default async function TopicPage({ params }: Props) {
   const { materia: materiaSlug, slug } = await params;
   const slugPath = slug.join("/");
+  const temaSlug = slug[slug.length - 1];
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -35,17 +49,27 @@ export default async function TopicPage({ params }: Props) {
     if (!acceso) redirect("/dashboard");
   }
 
-  const topic = getTopic(materiaSlug, slugPath);
-  if (!topic) notFound();
+  // Obtener tema y estructura completa en paralelo
+  const [tema, dbMateria] = await Promise.all([
+    getTemaFromDB(materiaSlug, temaSlug),
+    getMateriaBySlug(materiaSlug),
+  ]);
 
-  // Marcar como visto (server action)
+  if (!tema || !tema.contenido_mdx) notFound();
+
+  // Marcar como visto
   await markTopicVisto(user!.id, materia.id, slugPath);
 
-  // Navegación prev/next
-  const allTopics = getTopicsByMateria(materiaSlug);
-  const idx = allTopics.findIndex((t) => t.slugPath === slugPath);
-  const prev = idx > 0 ? allTopics[idx - 1] : null;
-  const next = idx < allTopics.length - 1 ? allTopics[idx + 1] : null;
+  // Prev / next
+  const allTemas = flattenTemas(dbMateria?.secciones ?? []);
+  const idx = allTemas.findIndex((t) => t.slugPath === slugPath);
+  const prev = idx > 0 ? allTemas[idx - 1] : null;
+  const next = idx < allTemas.length - 1 ? allTemas[idx + 1] : null;
+
+  // Nombre de sección para el header
+  const seccionTitulo = allTemas[idx]?.seccion.slug !== "__root__"
+    ? allTemas[idx]?.seccion.titulo
+    : null;
 
   return (
     <div className="max-w-3xl">
@@ -55,20 +79,17 @@ export default async function TopicPage({ params }: Props) {
         <span>/</span>
         <Link href={`/materia/${materiaSlug}`} className="hover:text-gray-300">{materia.titulo}</Link>
         <span>/</span>
-        <span className="text-gray-300">{topic.frontmatter.titulo}</span>
+        <span className="text-gray-300">{tema.titulo}</span>
       </nav>
 
       {/* Header */}
       <div className="mb-8">
-        <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-          {topic.frontmatter.seccion}
-        </p>
-        <h1 className="text-3xl font-bold text-white">{topic.frontmatter.titulo}</h1>
-        <div className="flex items-center gap-3 mt-2">
-          <span className="text-xs text-gray-500">
-            Dificultad: {"⭐".repeat(topic.frontmatter.dificultad)}
-          </span>
-        </div>
+        {seccionTitulo && (
+          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
+            {seccionTitulo}
+          </p>
+        )}
+        <h1 className="text-3xl font-bold text-white">{tema.titulo}</h1>
       </div>
 
       {/* Contenido MDX */}
@@ -79,7 +100,7 @@ export default async function TopicPage({ params }: Props) {
         prose-code:text-brand-400
         prose-pre:bg-gray-900
         prose-pre:border prose-pre:border-gray-800">
-        <MDXRemote source={topic.content} />
+        <MDXRemote source={tema.contenido_mdx} />
       </article>
 
       {/* Navegación prev/next */}
@@ -90,7 +111,7 @@ export default async function TopicPage({ params }: Props) {
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
             <span>←</span>
-            <span className="text-sm">{prev.frontmatter.titulo}</span>
+            <span className="text-sm">{prev.tema.titulo}</span>
           </Link>
         ) : <div />}
 
@@ -99,7 +120,7 @@ export default async function TopicPage({ params }: Props) {
             href={`/materia/${materiaSlug}/${next.slugPath}`}
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
-            <span className="text-sm">{next.frontmatter.titulo}</span>
+            <span className="text-sm">{next.tema.titulo}</span>
             <span>→</span>
           </Link>
         ) : <div />}
