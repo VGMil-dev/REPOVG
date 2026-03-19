@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "upload": "tsx scripts/upload-tema.ts"
+    "upload": "tsx --env-file=.env scripts/upload-tema.ts"
   },
   "dependencies": {
     "@shikijs/rehype": "^1.24.0",
