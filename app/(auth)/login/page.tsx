@@ -3,11 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
-import { LoginForm } from "@/components/organisms/LoginForm";
-import { AuthVisual } from "@/components/organisms/AuthVisual";
+import { LoginForm } from "@/features/auth/presentation/LoginForm";
+import { AuthVisual } from "@/features/auth/presentation/AuthVisual";
 import { Typography } from "@/components/ui/Typography";
+import { useAuth } from "@/features/auth/presentation/useAuth";
 
 const LoginPage = () => {
+  const { loading, error, showPassword, handleLogin, togglePasswordVisibility } = useAuth();
+
   return (
     <AuthTemplate
       title="SESIÓN"
@@ -23,7 +26,13 @@ const LoginPage = () => {
         </Typography>
       }
     >
-      <LoginForm />
+      <LoginForm 
+        loading={loading}
+        error={error}
+        showPassword={showPassword}
+        onSubmit={handleLogin}
+        onTogglePassword={togglePasswordVisibility}
+      />
     </AuthTemplate>
   );
 };

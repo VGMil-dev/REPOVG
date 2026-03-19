@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import Sidebar from "@/components/layout/Sidebar";
-import Topbar from "@/components/layout/Topbar";
-import ProfileSyncState from "@/components/layout/ProfileSyncState";
-import { MascotUserSync } from "@/components/mascot/MascotUserSync";
+import { createClient } from "@/infrastructure/supabase/server";
+import Sidebar from "@/components/organisms/Sidebar";
+import Topbar from "@/components/organisms/Topbar";
+import ProfileSyncState from "@/components/organisms/ProfileSyncState";
+import { MascotUserSync } from "@/features/mascot/presentation/MascotUserSync";
 
 export default async function ProtectedLayout({
   children,

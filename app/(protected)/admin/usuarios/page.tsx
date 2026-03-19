@@ -1,24 +1,40 @@
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import CrearUsuarioForm from "./CrearUsuarioForm";
-import UserList from "./UserList";
+"use client";
+
+import { useEffect, useState } from "react";
+import { createClient } from "@/infrastructure/supabase/client";
+import CrearUsuarioForm from "@/features/admin/presentation/CrearUsuarioForm";
+import UserList from "@/features/admin/presentation/UserList";
 import { Typography } from "@/components/ui/Typography";
 import { Users } from "lucide-react";
+import { useAdmin } from "@/features/admin/presentation/useAdmin";
 
-export default async function UsuariosPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+export default function UsuariosPage() {
+  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
+  const { loading, error, success, crearUsuario, resetState } = useAdmin();
+  const supabase = createClient();
 
-  const { data: profile } = await supabase
-    .from("profiles").select("rol").eq("id", user.id).single();
+  useEffect(() => {
+    async function fetchData() {
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+      setUsuarios(data ?? []);
+    }
+    fetchData();
+  }, [supabase, success]);
 
-  if (profile?.rol !== "profesor") redirect("/dashboard");
-
-  const { data: usuarios } = await supabase
-    .from("profiles")
-    .select("*")
-    .order("created_at", { ascending: false });
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const ok = await crearUsuario(new FormData(e.currentTarget));
+    if (ok) {
+      setTimeout(() => {
+        setOpen(false);
+        resetState();
+      }, 1200);
+    }
+  }
 
   return (
     <div className="max-w-5xl space-y-10">
@@ -30,14 +46,21 @@ export default async function UsuariosPage() {
           <div>
             <Typography as="h1" variant="brand-h1" glow className="!text-3xl">Usuarios</Typography>
             <Typography variant="terminal-sm" className="mt-1 !text-brand-500/60 uppercase">
-              {usuarios?.length ?? 0} RECLUTAS REGISTRADOS EN EL NÚCLEO
+              {usuarios.length} RECLUTAS REGISTRADOS EN EL NÚCLEO
             </Typography>
           </div>
         </div>
-        <CrearUsuarioForm />
+        <CrearUsuarioForm 
+          open={open}
+          onOpenChange={setOpen}
+          loading={loading}
+          error={error}
+          success={success}
+          onSubmit={handleSubmit}
+        />
       </div>
 
-      <UserList initialUsers={(usuarios as any) ?? []} />
+      <UserList initialUsers={usuarios} />
     </div>
   );
 }

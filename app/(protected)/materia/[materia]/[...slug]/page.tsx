@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
-import { getTopic, getTopicsByMateria } from "@/lib/content/mdx";
+import { createClient } from "@/infrastructure/supabase/server";
+import { getTopic, getTopicsByMateria } from "@/infrastructure/content/mdx";
 import { redirect, notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { markTopicVisto } from "@/lib/progress/actions";
+import { markTopicVisto } from "@/features/progress/services/actions";
 import Link from "next/link";
 
 interface Props {

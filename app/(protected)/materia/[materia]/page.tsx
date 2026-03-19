@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
-import { getTopicsByMateria } from "@/lib/content/mdx";
+import { createClient } from "@/infrastructure/supabase/server";
+import { getTopicsByMateria } from "@/infrastructure/content/mdx";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Typography } from "@/components/ui/Typography";
