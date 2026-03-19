@@ -1,4 +1,4 @@
-# <p align="center">RepoVG: Domina el Código</p>
+# <p align="center">Fragments: El ADN del Código</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js" alt="Next.js" />
@@ -10,16 +10,16 @@
 ---
 
 ## La Misión
-RepoVG no es solo un repositorio de clases; es una **plataforma de aprendizaje gamificada** diseñada para transformar la educación técnica. Nació de la necesidad de centralizar material académico y evolucionó en un ecosistema donde aprender es una experiencia inmersiva, competitiva y, sobre todo, humana.
+Fragments no es solo un repositorio de clases; es una **plataforma de aprendizaje gamificada** diseñada para transformar la educación técnica. Nació de la necesidad de centralizar material académico y evolucionó en un ecosistema donde aprender es una experiencia inmersiva, competitiva y, sobre todo, humana.
 
-> *"En RepoVG, no solo consumes contenido; forjas tu identidad como desarrollador junto a tu compañero digital."*
+> *"En Fragments, no solo consumes contenido; forjas tu identidad como desarrollador junto a tu compañero digital."*
 
 ---
 
 ## Características Únicas
 
 ### El Efecto Protégé (Tu Mascota)
-En RepoVG **eres tu mascota**. Para consolidar lo aprendido, debes explicarle conceptos a tu mascota pixel-art.
+En Fragments **eres tu mascota**. Para consolidar lo aprendido, debes explicarle conceptos a tu mascota pixel-art.
 - **Aprendizaje Activo**: Enseñar es la mejor forma de aprender.
 - **IA Socrática**: Integración con Google Gemini para darte pistas, nunca las respuestas.
 - **Identidad**: Mantente anónimo(a) ante tus pares, pero demuestra tu valía al profesor.
@@ -43,7 +43,7 @@ Tu entrenamiento comienza con tres misiones críticas:
 ---
 
 ## Stack Tecnológico
-RepoVG está construido sobre la vanguardia del desarrollo web:
+Fragments está construido sobre la vanguardia del desarrollo web:
 
 - **Frontend core**: Next.js 15 (App Router) + Tailwind CSS.
 - **Backend & Auth**: Supabase (PostgreSQL).
@@ -59,7 +59,7 @@ Clona el núcleo y arranca el sistema:
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/repovg.git
+git clone https://github.com/tu-usuario/fragments.git
 
 # 2. Instalar dependencias
 bun install
@@ -88,5 +88,5 @@ bun run dev
 </p>
 
 <p align="center">
-  Desarrollado con amor para la comunidad de RepoVG.
+  Desarrollado con amor para la comunidad de Fragments.
 </p>

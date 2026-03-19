@@ -75,7 +75,7 @@ export const AuthTemplate = ({
 
         {/* HUD Elements */}
         <Typography variant="terminal-sm" className="absolute top-8 right-8 !text-brand-500/20 vertical-text select-none">
-          REPOVG_AUTH_SYSTEM_V.1.0
+          FRAGMENTS_AUTH_SYSTEM_V.1.0
         </Typography>
       </div>
     </div>

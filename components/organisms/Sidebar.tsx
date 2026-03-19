@@ -56,8 +56,8 @@ export default function Sidebar({ profile }: Props) {
 
         <div className="text-center relative z-10">
           <div className="flex items-center justify-center gap-1 mb-0.5">
-            <Typography variant="brand-h2" as="span" className="!text-xl !text-orange-500">Repo</Typography>
-            <Typography variant="brand-h2" as="span" className="!text-xl !text-brand-500">VG</Typography>
+            <Typography variant="brand-h2" as="span" className="!text-xl !text-orange-500">FRAG</Typography>
+            <Typography variant="brand-h2" as="span" className="!text-xl !text-brand-500">MENTS</Typography>
           </div>
           <Typography variant="terminal-sm" className="!text-[9px] mb-1 !text-gray-500">
             Admin v1.0

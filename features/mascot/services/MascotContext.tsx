@@ -61,12 +61,57 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [bubble, setBubble] = useState<{ text: string; type: any } | null>(null);
 
+  // Persistence keys
+  const CHAT_STORAGE_KEY = "fragments_chat_history";
+  const QUOTA_STORAGE_KEY = "fragments_gemini_quota";
+
+  // Hydrate from localStorage
+  useEffect(() => {
+    const savedName = localStorage.getItem("fragments_mascot_name");
+    if (savedName) setName(savedName);
+
+    const savedSprite = localStorage.getItem("fragments_mascot_sprite") as MascotSpriteVariant | null;
+    if (savedSprite) setSprite(savedSprite);
+
+    try {
+      const savedHistory = localStorage.getItem(CHAT_STORAGE_KEY);
+      if (savedHistory) setChatHistory(JSON.parse(savedHistory));
+    } catch { /* ignore */ }
+
+    try {
+      const savedQuota = localStorage.getItem(QUOTA_STORAGE_KEY);
+      if (savedQuota) {
+        const q: GeminiQuotaState = JSON.parse(savedQuota);
+        if (Date.now() >= q.expiraAt) {
+          localStorage.removeItem(QUOTA_STORAGE_KEY);
+        } else {
+          setGeminiQuota(q);
+        }
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  const updateName = (newName: string) => {
+    setName(newName);
+    localStorage.setItem("fragments_mascot_name", newName);
+  };
+
+  const updateSprite = (newSprite: MascotSpriteVariant) => {
+    setSprite(newSprite);
+    localStorage.setItem("fragments_mascot_sprite", newSprite);
+  };
+
   const addChatMessage = (msg: ChatMessage) => {
-    setChatHistory((prev) => [...prev, msg]);
+    setChatHistory((prev) => {
+      const next = [...prev, msg];
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
   };
 
   const clearChatHistory = () => {
     setChatHistory([]);
+    localStorage.removeItem(CHAT_STORAGE_KEY);
   };
 
   const say = (text: string, type: any = "info", duration: number = 5000) => {
@@ -97,8 +142,8 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
         state,
         setState,
         say,
-        setName,
-        setSprite,
+        setName: updateName,
+        setSprite: updateSprite,
         sprite,
         userId,
         setUserId,

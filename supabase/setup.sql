@@ -1,5 +1,5 @@
 -- ============================================================
--- RepoVG — Supabase Setup Completo
+-- Fragments — Supabase Setup Completo
 -- Ejecuta en SQL Editor > New Query
 -- ============================================================
 

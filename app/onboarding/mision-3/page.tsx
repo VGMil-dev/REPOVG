@@ -22,6 +22,7 @@ import { SpriteSelector } from "@/features/onboarding/presentation/SpriteSelecto
 import { MISION_3_REWARD } from "@/features/onboarding/services/onboarding-constants";
 import { useOnboardingFlow, TUTORIAL_STEPS } from "@/features/onboarding/presentation/useOnboardingFlow";
 
+
 export default function Mission3Page() {
   const {
     phase,
@@ -67,7 +68,7 @@ export default function Mission3Page() {
     setName(mascotName.trim());
     setSprite(selectedSprite);
     setMascotState("celebrate");
-    say(`¡${mascotName.trim()} en línea! Bienvenido a RepoVG 🎉`, "success", 10000);
+    say(`¡${mascotName.trim()} en línea! Bienvenido a Fragments 🎉`, "success", 10000);
   }, [phase]);
 
   /* ── Render ────────────────────────────────────────────────────────────── */
@@ -95,8 +96,8 @@ export default function Mission3Page() {
             </span>
           </Typography>
           <Typography variant="body" className="text-gray-400 uppercase tracking-wider max-w-md">
-            {phase === "nombre"   && "Ponle nombre a tu compañero digital."}
-            {phase === "sprite"   && "Elige cómo quieres que se vea."}
+            {phase === "nombre" && "Ponle nombre a tu compañero digital."}
+            {phase === "sprite" && "Elige cómo quieres que se vea."}
             {phase === "tutorial" && "Aprende a trabajar junto a tu mascota."}
             {phase === "recompensa" && "¡Protocolo de vinculación completado!"}
           </Typography>
@@ -232,13 +233,12 @@ export default function Mission3Page() {
                 {TUTORIAL_STEPS.map((_, i) => (
                   <div
                     key={i}
-                    className={`rounded-full transition-all duration-300 ${
-                      i === tutorialStep
+                    className={`rounded-full transition-all duration-300 ${i === tutorialStep
                         ? "w-6 h-2 bg-cyan-400"
                         : i < tutorialStep
                           ? "w-2 h-2 bg-cyan-400/40"
                           : "w-2 h-2 bg-white/10"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>

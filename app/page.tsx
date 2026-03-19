@@ -131,7 +131,7 @@ export default function LandingPage() {
         {/* Decorative corner accents */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/5 blur-3xl rounded-bl-full" />
         <div className="absolute bottom-12 right-12 text-brand-500/10 font-mono text-[40px] lg:text-[80px] font-bold select-none rotate-90 origin-bottom-right">
-          REPOVG
+          FRAGMENTS
         </div>
       </div>
     </div>

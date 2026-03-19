@@ -15,7 +15,7 @@ const LoginPage = () => {
     <AuthTemplate
       title="SESIÓN"
       accentTitle="INICIAR"
-      subtitle="Identifícate para acceder al Núcleo de RepoVG"
+      subtitle="Identifícate para acceder al Núcleo de Fragments"
       visualContent={<AuthVisual message="TU COMPAÑERO TE ESPERA..." />}
       footer={
         <Typography variant="body" className="text-brand-500 tracking-wider uppercase">

@@ -53,7 +53,7 @@ export const AdminTemplate = ({
 
           <footer className="mt-12 pt-6 border-t border-brand-500/10 flex justify-between items-center opacity-40">
             <div className="font-terminal text-[10px] text-white/30 uppercase tracking-widest">
-              SISTEMA OPERATIVO REPOVG v1.0.4
+              SISTEMA OPERATIVO FRAGMENTS v1.0.4
             </div>
           </footer>
         </div>
