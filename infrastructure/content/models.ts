@@ -45,6 +45,46 @@ export interface MateriaContent {
   secciones: SeccionNode[];
 }
 
+// ─── Tipos de base de datos (Supabase) ───────────────────────────────────────
+
+export interface DBMateria {
+  id: string;
+  slug: string;
+  titulo: string;
+  descripcion: string;
+  color: string;
+  premium: boolean;
+  created_at: string;
+}
+
+export interface DBSeccion {
+  id: string;
+  materia_id: string;
+  slug: string;
+  titulo: string;
+  orden: number;
+  created_at: string;
+}
+
+export interface DBTema {
+  id: string;
+  materia_id: string;
+  seccion_id: string | null;
+  slug: string;
+  titulo: string;
+  descripcion: string | null;
+  orden: number;
+  premium: boolean;
+  contenido_mdx: string | null;
+  created_at: string;
+}
+
+export interface DBMateriaConSecciones extends DBMateria {
+  secciones: (DBSeccion & { temas: DBTema[] })[];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export interface TemaData {
   content: string;
   meta: {
