@@ -1,27 +1,71 @@
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import AsignarAccesoForm from "./AsignarAccesoForm";
-import AccesoList from "./AccesoList";
+"use client";
+
+import { useEffect, useState } from "react";
+import { createClient } from "@/infrastructure/supabase/client";
+import AsignarAccesoForm from "@/features/admin/presentation/AsignarAccesoForm";
+import AccesoList from "@/features/admin/presentation/AccesoList";
 import { Typography } from "@/components/ui/Typography";
 import { Key } from "lucide-react";
+import { useAdmin } from "@/features/admin/presentation/useAdmin";
 
-export default async function AccesosPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+export default function AccesosPage() {
+  const [data, setData] = useState<{
+    accesos: any[];
+    usuarios: any[];
+    materias: any[];
+    semestres: any[];
+  }>({
+    accesos: [],
+    usuarios: [],
+    materias: [],
+    semestres: [],
+  });
 
-  const { data: profile } = await supabase
-    .from("profiles").select("rol").eq("id", user.id).single();
+  const [open, setOpen] = useState(false);
+  const [tipo, setTipo] = useState<"activo" | "historico">("activo");
+  const { 
+    loading, error, success, 
+    asignarAcceso, revocarAcceso, cambiarTipoAcceso, 
+    resetState 
+  } = useAdmin();
+  const supabase = createClient();
 
-  if (profile?.rol !== "profesor") redirect("/dashboard");
+  async function fetchData() {
+    const [{ data: accesos }, { data: usuarios }, { data: materias }, { data: semestres }] =
+      await Promise.all([
+        supabase.from("accesos").select("*, profile:profiles!user_id(nombre, email), materia:materias(titulo)").order("created_at", { ascending: false }),
+        supabase.from("profiles").select("id, nombre, email").neq("rol", "profesor"),
+        supabase.from("materias").select("id, titulo"),
+        supabase.from("semestres").select("id, nombre").eq("activo", true),
+      ]);
+    setData({
+      accesos: accesos ?? [],
+      usuarios: usuarios ?? [],
+      materias: materias ?? [],
+      semestres: semestres ?? [],
+    });
+  }
 
-  const [{ data: accesos }, { data: usuarios }, { data: materias }, { data: semestres }] =
-    await Promise.all([
-      supabase.from("accesos").select("*, profile:profiles!user_id(nombre, email), materia:materias(titulo)").order("created_at", { ascending: false }),
-      supabase.from("profiles").select("id, nombre, email").neq("rol", "profesor"),
-      supabase.from("materias").select("id, titulo"),
-      supabase.from("semestres").select("id, nombre").eq("activo", true),
-    ]);
+  useEffect(() => {
+    fetchData();
+  }, [supabase]);
+
+  useEffect(() => {
+    if (success) {
+      fetchData();
+    }
+  }, [success]);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const ok = await asignarAcceso(new FormData(e.currentTarget));
+    if (ok) {
+      setTimeout(() => {
+        setOpen(false);
+        resetState();
+      }, 1200);
+    }
+  }
 
   return (
     <div className="max-w-5xl space-y-10">
@@ -38,15 +82,31 @@ export default async function AccesosPage() {
           </div>
         </div>
         <AsignarAccesoForm
-          usuarios={usuarios ?? []}
-          materias={materias ?? []}
-          semestres={semestres ?? []}
+          open={open}
+          onOpenChange={setOpen}
+          loading={loading}
+          error={error}
+          success={success}
+          onSubmit={handleSubmit}
+          tipo={tipo}
+          onTipoChange={setTipo}
+          usuarios={data.usuarios}
+          materias={data.materias}
+          semestres={data.semestres}
         />
       </div>
 
       <AccesoList 
-        initialAccesos={(accesos as any) ?? []} 
-        materias={materias ?? []} 
+        initialAccesos={data.accesos} 
+        materias={data.materias}
+        onRevocar={async (id) => {
+          await revocarAcceso(id);
+          fetchData();
+        }}
+        onCambiarTipo={async (id, nuevoTipo) => {
+          await cambiarTipoAcceso(id, nuevoTipo);
+          fetchData();
+        }}
       />
     </div>
   );

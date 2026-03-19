@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { AdminTemplate } from "@/components/templates/AdminTemplate";
 import { Typography } from "@/components/ui/Typography";
 import { Button } from "@/components/ui/Button";
-import { useMascot } from "@/lib/context/MascotContext";
-import { MascotWidget } from "@/components/mascot/MascotWidget";
+import { useMascot } from "@/features/mascot/services/MascotContext";
+import { MascotWidget } from "@/features/mascot/presentation/MascotWidget";
 import { Play, MessageSquare, Info, AlertTriangle, CheckCircle, HelpCircle } from "lucide-react";
 
 export default function MascotTestPage() {

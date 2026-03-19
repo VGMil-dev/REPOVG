@@ -16,11 +16,11 @@ import {
   Key,
   ClipboardPaste,
 } from "lucide-react";
-import { validateGeminiKey } from "@/lib/auth/onboarding-actions";
-import { MISION_1_REWARD } from "@/lib/auth/onboarding-constants";
+import { validateGeminiKey } from "@/features/onboarding/services/actions";
+import { MISION_1_REWARD } from "@/features/onboarding/services/onboarding-constants";
 import { useRouter } from "next/navigation";
 import { Typography } from "@/components/ui/Typography";
-import { useMascot } from "@/lib/context/MascotContext";
+import { useMascot } from "@/features/mascot/services/MascotContext";
 
 const STEPS = [
   {

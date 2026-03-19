@@ -4,14 +4,14 @@ import React from "react";
 import { LucideIcon } from "lucide-react";
 
 interface IconProps {
-  icon: LucideIcon;
+  icon: React.ComponentType<{ className?: string }>;
   className?: string;
   glow?: boolean;
   glowColor?: "brand" | "orange";
 }
 
 export const Icon = ({ 
-  icon: LucideIcon, 
+  icon: LucideIconComponent, 
   className = "w-5 h-5", 
   glow = false, 
   glowColor = "brand" 
@@ -20,5 +20,5 @@ export const Icon = ({
     ? (glowColor === "brand" ? "text-glow" : "text-glow-orange") 
     : "";
     
-  return <LucideIcon className={`${className} ${glowClass}`} />;
+  return <LucideIconComponent className={`${className} ${glowClass}`} />;
 };

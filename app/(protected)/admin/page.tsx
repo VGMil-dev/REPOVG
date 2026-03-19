@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Users, Key, BookOpen, Settings, BarChart3, Shield, ArrowRight, MessageSquare } from "lucide-react";

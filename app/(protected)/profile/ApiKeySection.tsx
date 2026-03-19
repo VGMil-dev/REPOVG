@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ShieldCheck, ExternalLink, Check, X, Loader2, Pencil, Trash2 } from "lucide-react";
 import { Typography } from "@/components/ui/Typography";
-import { updateGeminiKey } from "@/lib/auth/profile-actions";
+import { updateGeminiKey } from "@/features/auth/services/profile-actions";
 import { useRouter } from "next/navigation";
 
 interface Props {

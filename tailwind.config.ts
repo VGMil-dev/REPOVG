@@ -5,9 +5,14 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./features/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        pixel: ["var(--font-pixel)", "cursive"],
+        terminal: ["var(--font-terminal)", "monospace"],
+      },
       colors: {
         brand: {
           50: "#f0fdf4",
@@ -20,28 +25,30 @@ const config: Config = {
           700: "#15803d",
           800: "#166534",
           900: "#14532d",
-        },
-        orange: {
-          50: "#fff7ed",
-          100: "#ffedd5",
-          200: "#fed7aa",
-          300: "#fdba74",
-          400: "#fb923c",
-          500: "#f97316",
-          600: "#ea580c",
-          700: "#c2410c",
-          800: "#9a3412",
-          900: "#7c2d12",
+          950: "#052e16",
         },
       },
-      fontFamily: {
-        pixel: ["var(--font-pixel)", "cursive"],
-        terminal: ["var(--font-terminal)", "monospace"],
-        mono: ["JetBrains Mono", "Fira Code", "monospace"],
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      keyframes: {
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-15px)" },
+        },
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
+      },
+      animation: {
+        float: "float 4s ease-in-out infinite",
+        blink: "blink 1s step-end infinite",
       },
     },
   },
   plugins: [],
 };
-
 export default config;
