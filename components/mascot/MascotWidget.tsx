@@ -13,9 +13,9 @@ const WIDGET_PX = SPRITE_SIZE * WIDGET_SCALE;
 
 const SPRITE_FILTERS: Record<string, string> = {
   default: "none",
-  fire:    "hue-rotate(30deg) saturate(1.6)",
-  ice:     "hue-rotate(180deg) saturate(0.8) brightness(1.2)",
-  dark:    "hue-rotate(270deg) saturate(0.5) brightness(0.7)",
+  fire: "hue-rotate(30deg) saturate(1.6)",
+  ice: "hue-rotate(180deg) saturate(0.8) brightness(1.2)",
+  dark: "hue-rotate(270deg) saturate(0.5) brightness(0.7)",
 };
 
 interface MascotWidgetProps {
@@ -47,10 +47,11 @@ export function MascotWidget({ forceVisible: forceVisibleProp = false }: MascotW
   if (!isVisible) return null;
 
   const currentAnimation: AnimationType =
-    state === "idle" || state === "think" || state === "learning" || state === "worry" ? "idle" :
-      state === "putbrain" ? "putbrain" :
-        state === "celebrate" ? "celebrate" :
-          "welcome";
+    state === "idle" || state === "think" || state === "worry" ? "idle" :
+      state === "learning" ? "learning" :
+        state === "putbrain" ? "putbrain" :
+          state === "celebrate" ? "celebrate" :
+            "welcome";
 
   const handleSpriteClick = () => {
     if (!userId) return; // No chat without userId
