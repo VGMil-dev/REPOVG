@@ -1,5 +1,5 @@
 -- ====================================================
--- RepoVG — Migración 002: Onboarding y Roles
+-- Fragments — Migración 002: Onboarding y Roles
 -- ====================================================
 
 -- Agregar columna de progreso de onboarding

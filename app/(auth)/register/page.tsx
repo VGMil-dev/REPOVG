@@ -11,7 +11,7 @@ export default function RegisterPage() {
     <AuthTemplate
       title="RECLUTA"
       accentTitle="NUEVO"
-      subtitle="Comienza tu entrenamiento en RepoVG"
+      subtitle="Comienza tu entrenamiento en Fragments"
       visualContent={<AuthVisual message="BIENVENIDO RECLUTA..." />}
       footer={
         <p className="font-terminal text-md text-brand-500 tracking-wider uppercase">

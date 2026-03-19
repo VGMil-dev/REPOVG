@@ -17,7 +17,7 @@ const vt323 = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "RepoVG",
+  title: "Fragments",
   description: "Plataforma académica gamificada",
 };
 

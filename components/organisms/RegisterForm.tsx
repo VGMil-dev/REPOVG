@@ -60,7 +60,7 @@ export const RegisterForm = () => {
         label="Correo Electronico"
         name="email"
         type="email"
-        placeholder="estudiante@repovg.com"
+        placeholder="estudiante@fragments.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         icon={<Mail className="w-4 h-4" />}

@@ -152,7 +152,7 @@ export default function Mission1Page() {
                     Instrucciones del Sistema
                   </Typography>
                   <Typography variant="body-sm" className="text-brand-400/60 leading-relaxed">
-                    Tu API Key se almacena de forma segura en tu perfil. Solo RepoVG la usa para
+                    Tu API Key se almacena de forma segura en tu perfil. Solo Fragments la usa para
                     ayudarte a resolver dudas de código.
                   </Typography>
                 </div>

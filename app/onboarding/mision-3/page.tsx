@@ -63,7 +63,7 @@ const TUTORIAL_STEPS = [
   {
     icon: Sparkles,
     title: "TODO LISTO",
-    body: "Tienes todo lo que necesitas para comenzar tu jornada en RepoVG.\n\nTu mascota está activa, tu repositorio conectado y tu clave Gemini configurada. El sistema está listo para ti.",
+    body: "Tienes todo lo que necesitas para comenzar tu jornada en Fragments.\n\nTu mascota está activa, tu repositorio conectado y tu clave Gemini configurada. El sistema está listo para ti.",
     mascotState: "celebrate" as const,
     mascotMsg: "¡Protocolo completo! Iniciemos 🚀",
   },
@@ -141,7 +141,7 @@ export default function Mission3Page() {
     setName(mascotName.trim());
     setSprite(selectedSprite);
     setMascotState("celebrate");
-    say(`¡${mascotName.trim()} en línea! Bienvenido a RepoVG 🎉`, "success", 10000);
+    say(`¡${mascotName.trim()} en línea! Bienvenido a Fragments 🎉`, "success", 10000);
   }, [phase]);
 
   /* ── Render ────────────────────────────────────────────────────────────── */

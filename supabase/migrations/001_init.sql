@@ -1,5 +1,5 @@
 -- ====================================================
--- RepoVG — Migración 001: Schema inicial
+-- Fragments — Migración 001: Schema inicial
 -- ====================================================
 
 -- Extensiones

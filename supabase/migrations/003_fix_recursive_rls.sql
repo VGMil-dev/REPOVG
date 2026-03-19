@@ -1,5 +1,5 @@
 -- ====================================================
--- RepoVG — Migración 003: Fix RLS Recursivo
+-- Fragments — Migración 003: Fix RLS Recursivo
 -- ====================================================
 
 -- 1. Crear función security definer para checkear rol sin recursión

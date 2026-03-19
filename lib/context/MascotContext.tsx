@@ -17,9 +17,9 @@ interface MascotBubbleMessage {
   duration?: number;
 }
 
-const CHAT_STORAGE_KEY = "repovg_chat_history";
+const CHAT_STORAGE_KEY = "fragments_chat_history";
 const MAX_CHAT_HISTORY = 50;
-const QUOTA_STORAGE_KEY = "repovg_gemini_quota";
+const QUOTA_STORAGE_KEY = "fragments_gemini_quota";
 
 interface MascotContextType {
   // Auth
@@ -84,10 +84,10 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
 
   // Hydrate from localStorage
   useEffect(() => {
-    const savedName = localStorage.getItem("repovg_mascot_name");
+    const savedName = localStorage.getItem("fragments_mascot_name");
     if (savedName) setNameState(savedName);
 
-    const savedSprite = localStorage.getItem("repovg_mascot_sprite") as MascotSpriteVariant | null;
+    const savedSprite = localStorage.getItem("fragments_mascot_sprite") as MascotSpriteVariant | null;
     if (savedSprite && VALID_SPRITES.includes(savedSprite)) setSpriteState(savedSprite);
 
     try {
@@ -111,12 +111,12 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
 
   const setName = (newName: string) => {
     setNameState(newName);
-    localStorage.setItem("repovg_mascot_name", newName);
+    localStorage.setItem("fragments_mascot_name", newName);
   };
 
   const setSprite = (s: MascotSpriteVariant) => {
     setSpriteState(s);
-    localStorage.setItem("repovg_mascot_sprite", s);
+    localStorage.setItem("fragments_mascot_sprite", s);
   };
 
   const setGeminiQuota = useCallback((q: GeminiQuotaState | null) => {
