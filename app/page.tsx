@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight, Zap, Target, Award, Terminal, Github, Bot } from "lucide-react";
-import { MascotSprite } from "@/components/mascot/MascotSprite";
+import { MascotSprite } from "@/features/mascot/presentation/MascotSprite";
 
 import { Typography } from "@/components/ui/Typography";
 

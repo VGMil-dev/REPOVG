@@ -1,9 +1,9 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { BookOpen, ChevronRight, Star, Coins, TrendingUp, Lock, UserCircle } from "lucide-react";
 import { Typography } from "@/components/ui/Typography";
-import { MascotDashboardSync } from "@/components/mascot/MascotDashboardSync";
+import { MascotDashboardSync } from "@/features/mascot/presentation/MascotDashboardSync";
 
 export default async function DashboardPage() {
   const supabase = await createClient();

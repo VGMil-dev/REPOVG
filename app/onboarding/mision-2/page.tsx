@@ -16,11 +16,11 @@ import {
   CheckCircle2,
   Link as LinkIcon,
 } from "lucide-react";
-import { validateGithubRepo } from "@/lib/auth/onboarding-actions";
-import { MISION_2_REWARD } from "@/lib/auth/onboarding-constants";
+import { validateGithubRepo } from "@/features/onboarding/services/actions";
+import { MISION_2_REWARD } from "@/features/onboarding/services/onboarding-constants";
 import { useRouter } from "next/navigation";
 import { Typography } from "@/components/ui/Typography";
-import { useMascot } from "@/lib/context/MascotContext";
+import { useMascot } from "@/features/mascot/services/MascotContext";
 
 const STEPS = [
   {

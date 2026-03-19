@@ -3,10 +3,24 @@
 import React from "react";
 import Link from "next/link";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
-import { RegisterForm } from "@/components/organisms/RegisterForm";
-import { AuthVisual } from "@/components/organisms/AuthVisual";
+import { RegisterForm } from "@/features/auth/presentation/RegisterForm";
+import { AuthVisual } from "@/features/auth/presentation/AuthVisual";
+import { useAuth } from "@/features/auth/presentation/useAuth";
 
 export default function RegisterPage() {
+  const { loading, error, handleRegister } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    await handleRegister({
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      nombre: formData.get("nombre") as string,
+      rol: formData.get("rol") as string,
+    });
+  };
+
   return (
     <AuthTemplate
       title="RECLUTA"
@@ -22,7 +36,11 @@ export default function RegisterPage() {
         </p>
       }
     >
-      <RegisterForm />
+      <RegisterForm 
+        loading={loading}
+        error={error}
+        onSubmit={handleSubmit}
+      />
     </AuthTemplate>
   );
 }

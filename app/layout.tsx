@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   description: "Plataforma académica gamificada",
 };
 
-import { MascotProvider } from "@/lib/context/MascotContext";
-import { MascotWidget } from "@/components/mascot/MascotWidget";
+import { MascotProvider } from "@/features/mascot/services/MascotContext";
+import { MascotWidget } from "@/features/mascot/presentation/MascotWidget";
 
 export default function RootLayout({
   children,
